@@ -1,4 +1,4 @@
-import {user} from "../config/database.js";
+
 import bcrypt  from "bcrypt";
 import dotenv from "dotenv";
 dotenv.config();

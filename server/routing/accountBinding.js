@@ -1,6 +1,6 @@
 
-const express = require('express');
-const cookieParser = require('cookie-parser');
+import express from "express";
+import cookieParser from 'cookie-parser';
 import {clientPath} from "../server.js";
 const router = express.Router();
 
