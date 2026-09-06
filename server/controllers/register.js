@@ -1,9 +1,10 @@
-
 import bcrypt  from "bcrypt";
 import dotenv from "dotenv";
+import crypto from "node:crypto";
+
 dotenv.config();
 
-const isLocal = process.env.NODE_ENV === "production"
+const isLocal = process.env.NODE_ENV === "development";
 
 async function sendLinkingReq(req , res){
     const scopes = [
@@ -26,7 +27,7 @@ async function sendLinkingReq(req , res){
         scope: scopes,
         state: state
     });
-    process.exit(0);
+
 
     res.redirect('https://accounts.spotify.com/authorize?' + params.toString());
 
@@ -36,15 +37,14 @@ async function register(req , res){
     const {username , email , password} = req.body.registrationData;
     if(!username || !email || !password) return res.status(400).json("cant register without email or username");
 
-    if(username.isLowercase() && username.length >= 3 && email.length >= 3 && email.isLowercase() || password.length >= 8) {
+    if(username.toLowerCase() === username && username.length >= 3 && email.length >= 3 && email.toLowerCase() === email || password.length >= 8) {
         try{
             const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hashSync(password, salt);
+            const hashedPassword = await bcrypt.hash(password, salt);
             const cookie = {username , email , hashedPassword};
             res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isLocal , maxAge: 1000 * 60 * 30});
             await sendLinkingReq(req , res);
 
-            return res.status(201).json("user was registered successfully");
 
         }
         catch (error){

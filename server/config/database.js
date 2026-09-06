@@ -8,7 +8,7 @@ const sequelize = new Sequelize( process.env.USER , process.env.USER, process.en
     host: "localhost"
 });
 
-process.exit(0);
+
 
 try{
     await sequelize.authenticate();

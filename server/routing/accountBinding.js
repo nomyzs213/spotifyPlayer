@@ -1,4 +1,3 @@
-
 import express from "express";
 import cookieParser from 'cookie-parser';
 import {clientPath} from "../server.js";
@@ -17,7 +16,7 @@ router.get('/binding?status=completed' , async (req , res) => {
 })
 
 router.get('/binding?status=cancelled',  (req, res) => {
-     res.sendFile(clientPath + "/403.html")
+     res.sendFile(clientPath + "/403.html");
 })
 
 async function bindAccount(req , res){
