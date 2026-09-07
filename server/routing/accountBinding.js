@@ -17,7 +17,12 @@ router.get('/binding?status=pending' , async (req , res) => {
         return;
     }
 
-    await bindAccount(req, res);
+    try{
+        await bindAccount(req , res);
+    }
+    catch(err){
+        console.error(err);
+    }
 })
 
 router.get('/binding?status=cancelled',  (req, res) => {
@@ -33,6 +38,7 @@ async function bindAccount(req , res){
     const [accessToken , refreshToken, expiresAt] = await getAccessToken(res , code);
 
     if(!accessToken && refreshToken && expiresAt){
+        await clearCookies(res);
         return res.status(401).json("problem with binding accounts");
     }
 
@@ -50,7 +56,8 @@ async function bindAccount(req , res){
     });
 
     await userToken.setUser(createdUser);
-    
+    await res.clearCookie('pending_registration');
+
     return res.status(201).json("user successfully created");
 
 }
@@ -79,8 +86,8 @@ async function getAccessToken(res , code){
     })
 
     if(!fetchResponse.ok) {
-        res.status(400).json("problem with spotify api");
-        return;
+        await clearCookies(res);
+        return res.status(403).json("problem with spotify api");
     }
 
     const data =  await fetchResponse.json();
@@ -91,5 +98,8 @@ async function getAccessToken(res , code){
 
 }
 
-
+async function clearCookies(res){
+    await res.clearCookie('pending_registration');
+    await res.clearCookie('state');
+}
 export default router;
