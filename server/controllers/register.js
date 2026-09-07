@@ -1,6 +1,7 @@
 import bcrypt  from "bcrypt";
 import dotenv from "dotenv";
-
+import {user} from "../models/user.js";
+import e from "express";
 dotenv.config();
 
 const isLocal = process.env.NODE_ENV === "development";
@@ -40,6 +41,16 @@ async function register(req , res){
         try{
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
+            const alreadyExists = await user.find({
+                where: {
+                    email: email
+                }
+            });
+
+            if(alreadyExists) {
+                return res.status(401).json("account with that email already exists");
+            }
+
             const cookie = {username , email , hashedPassword};
             res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isLocal , maxAge: 1000 * 60 * 30});
             await sendLinkingReq(req , res);
