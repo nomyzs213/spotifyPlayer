@@ -1,6 +1,5 @@
 import bcrypt  from "bcrypt";
 import dotenv from "dotenv";
-import crypto from "node:crypto";
 
 dotenv.config();
 
@@ -17,7 +16,7 @@ async function sendLinkingReq(req , res){
         'user-read-email'
     ].join(' ');
 
-    const state = crypto.randomBytes(16).toString('hex');
+    const state = crypto.randomUUID().toString('hex');
     res.cookie('state' , state , {httpOnly: true , secure: isLocal, maxAge: 1000 * 60 * 60 * 24 * 7});
 
     const params = new URLSearchParams({
