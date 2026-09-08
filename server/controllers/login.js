@@ -1,6 +1,7 @@
 import {user , user_token} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
 import {Op, where} from "sequelize";
+
 async function login(req ,res){
     const loggingIdentifier = req.body.username;
     const password = req.body.password;
@@ -27,9 +28,11 @@ async function login(req ,res){
         return res.status(401).json("passwords do not match");
     }
 
-    const userTokens = await user_token.find({
+    const userToken = await user_token.find({
         id: found.id
     })
+
+    const {accessToken , expires_at} = userToken;
 
 
 }
