@@ -1,35 +1,36 @@
 import {DataTypes} from "sequelize";
 import {sequelize} from "../config/database.js";
 
-export const user_token = await sequelize.define("Token" , {
+export const user_token = sequelize.define("Token" , {
     user_id: {
         type: DataTypes.UUID,
-        validate: {
-            allowNull: false,
-            unique: true
-        }
+        allowNull: false,
+        unique: true
+
     },
 
     access_token: {
         type: DataTypes.TEXT,
-        validate: {
-            allowNull: false,
+        allowNull: false,
+        validate:{
             notEmpty: true
         }
+
     },
 
     expires_at: {
         type: DataTypes.DATE,
+        allowNull: false,
         validate: {
-            allowNull: false
+            notEmpty: true
         }
     },
 
 
     refresh_token: {
         type: DataTypes.TEXT,
+        allowNull: false,
         validate: {
-            allowNull: false,
             notEmpty: true
         }
     }

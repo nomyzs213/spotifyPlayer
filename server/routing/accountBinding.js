@@ -15,6 +15,7 @@ router.get('/binding' , async (req , res) => {
     const {error , status} = req.query;
 
     if(status === "canceled"){
+        await clearCookies(res , "pending_registration" , "state");
         res.sendFile(path.join(clientPath , "/403.html"));
         return;
     }
