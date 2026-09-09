@@ -75,7 +75,7 @@ async function bindAccount(req, res) {
         }, { transaction: t });
 
         await user_token.create({
-            fk_user_id: createdUser.id,
+            user_id: createdUser.id,
             access_token: accessToken,
             refresh_token: refreshToken,
             expires_at: expiresAt

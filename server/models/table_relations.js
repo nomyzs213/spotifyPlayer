@@ -3,7 +3,7 @@ import {user_token} from "./user_token.js";
 
 user.hasOne(user_token, {
     foreignKey: {
-        name: "fk_user_id",
+        name: "user_id",
         allowNull: false
     },
     onDelete: "CASCADE"
@@ -11,7 +11,7 @@ user.hasOne(user_token, {
 
 user_token.belongsTo(user, {
     foreignKey: {
-        name: "fk_user_id",
+        name: "user_id",
         allowNull: false
     }
 });

@@ -1,8 +1,8 @@
 import {DataTypes} from "sequelize";
 import {sequelize} from "../config/database.js";
 
-export const user_token = await sequelize.define("tokens" , {
-    id: {
+export const user_token = await sequelize.define("Token" , {
+    user_id: {
         type: DataTypes.UUID,
         validate: {
             allowNull: false,
