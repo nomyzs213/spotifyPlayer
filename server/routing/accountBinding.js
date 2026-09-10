@@ -5,7 +5,7 @@ const router = express.Router();
 import dotenv from "dotenv";
 import {user , user_token}  from "../models/table_relations.js";
 import {clearCookies} from "../controllers/cookieClearing.js";
-import {getAccessToken} from "../controllers/token_manager.js";
+import {getAccessTokenWithCode} from "../controllers/token_manager.js";
 import {sequelize} from "../config/database.js";
 import path from "node:path";
 dotenv.config();
@@ -57,9 +57,9 @@ async function bindAccount(req, res) {
     const { username, email, hashedPassword } = rawCookie;
 
 
-    let accessToken, refreshToken, expiresAt;
+    let accessToken, refreshToken, accessExpiresAt, refreshExpiresAt;
     try {
-        [accessToken, refreshToken, expiresAt] = await getAccessToken(code);
+        [accessToken, refreshToken, accessExpiresAt ,refreshExpiresAt ] = await getAccessTokenWithCode(code);
     } catch (error) {
         console.error("Spotify token exchange error:", error.message);
         await clearCookies(res, "pending_registration", "state");
@@ -79,7 +79,8 @@ async function bindAccount(req, res) {
             user_id: createdUser.id,
             access_token: accessToken,
             refresh_token: refreshToken,
-            expires_at: expiresAt
+            access_token_expiry: accessExpiresAt,
+            refresh_token_expiry:refreshExpiresAt
         }, { transaction: t });
 
         await t.commit();

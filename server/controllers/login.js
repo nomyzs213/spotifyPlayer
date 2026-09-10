@@ -1,6 +1,7 @@
 import {user , user_token} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
-import {Op, where} from "sequelize";
+import {Op} from "sequelize";
+import {getAccessTokenWithCode} from "./token_manager.js";
 
 async function login(req ,res){
     const loggingIdentifier = req.body.username;
@@ -27,12 +28,5 @@ async function login(req ,res){
     if(!isSame){
         return res.status(401).json("passwords do not match");
     }
-
-    const userToken = await user_token.find({
-        id: found.id
-    })
-
-    const {accessToken , expires_at} = userToken;
-
 
 }

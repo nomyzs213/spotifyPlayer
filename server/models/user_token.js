@@ -18,7 +18,7 @@ export const user_token = sequelize.define("Token" , {
 
     },
 
-    expires_at: {
+    access_token_expiry: {
         type: DataTypes.DATE,
         allowNull: false,
         validate: {
@@ -29,6 +29,14 @@ export const user_token = sequelize.define("Token" , {
 
     refresh_token: {
         type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
+    },
+
+    refresh_token_expiry: {
+        type: DataTypes.DATE,
         allowNull: false,
         validate: {
             notEmpty: true

@@ -2,37 +2,11 @@ import bcrypt  from "bcrypt";
 import dotenv from "dotenv";
 import {user} from "../models/user.js";
 import {Op} from "sequelize";
+import {sendLinkingReq} from "./linkingReq.js";
+import {isLocal} from "../config/cookieInfo.js";
+
 dotenv.config();
 
-const isLocal = process.env.NODE_ENV === "production";
-
-export async function sendLinkingReq(req , res){
-    const scopes = [
-        'user-top-read',
-        'user-read-private',
-        'playlist-read-collaborative',
-        'playlist-read-private',
-        'playlist-modify-public',
-        'playlist-modify-private',
-        'user-read-email'
-    ].join(' ');
-
-    const state = crypto.randomUUID();
-    res.cookie('state' , state , {httpOnly: true , secure: isLocal, maxAge: 1000 * 60 * 60 * 24 * 7});
-
-    const params = new URLSearchParams({
-        response_type: 'code',
-        redirect_uri: process.env.REDIRECT_URI,
-        client_id: process.env.CLIENT_ID,
-        scope: scopes,
-        state: state
-    }).toString();
-
-
-    res.redirect('https://accounts.spotify.com/authorize?' + params);
-
-
-}
 async function register(req , res){
     let {username , email , password} = req.body.registrationData;
     if(!username || !email || !password) return res.status(400).json("cant register without email or username");
