@@ -1,7 +1,7 @@
 import express from "express";
 import cookieParser from 'cookie-parser';
 import {clientPath} from "../server.js";
-const router = express.Router();
+const binding = express.Router();
 import dotenv from "dotenv";
 import {user , user_token}  from "../models/table_relations.js";
 import {clearCookies} from "../controllers/cookieClearing.js";
@@ -10,19 +10,19 @@ import {sequelize} from "../config/database.js";
 import path from "node:path";
 dotenv.config();
 
-router.use(cookieParser());
-router.get('/binding' , async (req , res) => {
+binding.use(cookieParser());
+binding.get('/binding' , async (req , res) => {
     const {error , status} = req.query;
 
     if(status === "canceled"){
-        await clearCookies(res , "pending_registration" , "state");
-        res.sendFile(path.join(clientPath , "/403.html"));
+         clearCookies(res , "pending_registration" , "state");
+        res.sendFile(path.join(clientPath , "errors/403.html"));
         return;
     }
 
     if(error) {
-        await clearCookies(res , "pending_registration" , "state");
-        res.sendFile(path.join(clientPath , "/403.html"));
+         clearCookies(res , "pending_registration" , "state");
+        res.sendFile(path.join(clientPath , "errors/403.html"));
         return;
     }
 
@@ -43,14 +43,14 @@ async function bindAccount(req, res) {
 
 
     if (!state || !stateInCookies || stateInCookies !== state) {
-        await clearCookies(res, 'pending_registration', 'state');
+         clearCookies(res, 'pending_registration', 'state');
         return res.status(400).json("unauthorized connection");
     }
 
 
     const rawCookie = req.cookies.pending_registration;
     if (!rawCookie) {
-        await clearCookies(res, 'state');
+         clearCookies(res, 'state');
         return res.status(400).send('session expired or no cookie was set!');
     }
 
@@ -62,7 +62,7 @@ async function bindAccount(req, res) {
         [accessToken, refreshToken, accessExpiresAt ,refreshExpiresAt ] = await getAccessTokenWithCode(code);
     } catch (error) {
         console.error("Spotify token exchange error:", error.message);
-        await clearCookies(res, "pending_registration", "state");
+         clearCookies(res, "pending_registration", "state");
         return res.status(502).json("problem with spotify api");
     }
 
@@ -85,17 +85,17 @@ async function bindAccount(req, res) {
 
         await t.commit();
 
-        await clearCookies(res, 'pending_registration', 'state');
+        clearCookies(res, 'pending_registration', 'state');
         return res.status(201).json("user successfully created");
 
     } catch (error) {
         await t.rollback();
         console.error("Database transaction error:", error);
-        await clearCookies(res, 'pending_registration', 'state');
+        clearCookies(res, 'pending_registration', 'state');
         return res.status(500).json('database error');
     }
 }
 
 
 
-export default router;
+export default binding;

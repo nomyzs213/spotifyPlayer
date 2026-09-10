@@ -40,7 +40,7 @@ export async function getAccessTokenWithCode(code){
 
 }
 
-export async function getAccessTokenWithRefresh(res, refreshToken){
+export async function getAccessTokenWithRefresh(oldToken, userId){
     const url = "https://accounts.spotify.com/api/token";
 
     const result = await fetch(url , {
@@ -52,7 +52,7 @@ export async function getAccessTokenWithRefresh(res, refreshToken){
         body: new URLSearchParams(
             {
                 grant_type: 'refresh_token',
-                refresh_token: refreshToken
+                refresh_token: oldToken
             }
         ).toString()
     })
@@ -64,10 +64,47 @@ export async function getAccessTokenWithRefresh(res, refreshToken){
     const data = await result.json();
 
     const {access_token, expires_in , refresh_token} = data;
-
     const accessExpiresAt = new Date(Date.now() + expires_in * 1000);
 
-    return [access_token ,refresh_token, accessExpiresAt];
+
+    if(refresh_token !== oldToken && refresh_token !== undefined){
+        try{
+            await user_token.update({
+                access_token: access_token,
+                access_token_expiry: accessExpiresAt,
+                refresh_token: refresh_token
+            }, {
+                where: {
+                    user_id: userId
+                }
+            });
+
+        }
+        catch (err){
+            throw new Error(err.message);
+        }
+
+        return [access_token, refresh_token, accessExpiresAt];
+
+    }
+    else{
+        try{
+            await  user_token.update({
+                access_token: access_token,
+                access_token_expiry: accessExpiresAt
+            }, {
+                where : {
+                    user_id: userId
+                }
+            })
+        }
+        catch(err){
+            throw new Error(err.message);
+        }
+
+        return [access_token ,oldToken , accessExpiresAt];
+    }
+
 
 }
 
@@ -84,9 +121,8 @@ export async function setTokens(userId , accessToken, refreshToken , accessExpir
     });
 
     const updated = await userTokens.update({
-        accessToken: accessToken,
-        access_token_expiry: accessExpiresAt,
-        refreshToken: refreshToken
+        access_token: accessToken,
+        access_token_expiry: accessExpiresAt
     });
 
     if (!updated) {

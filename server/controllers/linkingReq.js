@@ -1,4 +1,4 @@
-import {isLocal} from "../config/cookieInfo.js";
+import {isHttps} from "../config/cookieInfo.js";
 export async function sendLinkingReq(req , res, alreadyRegistered) {
     const scopes = [
         'user-top-read',
@@ -11,7 +11,7 @@ export async function sendLinkingReq(req , res, alreadyRegistered) {
     ].join(' ');
 
     const state = crypto.randomUUID();
-    res.cookie('state', state, {httpOnly: true, secure: isLocal, maxAge: 1000 * 60 * 60 * 24 * 7});
+    res.cookie('state', state, {httpOnly: true, secure: isHttps, maxAge: 1000 * 60 * 60 * 24 * 7});
 
     const params = new URLSearchParams({
         response_type: 'code',

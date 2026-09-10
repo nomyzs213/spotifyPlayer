@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import {user} from "../models/user.js";
 import {Op} from "sequelize";
 import {sendLinkingReq} from "./linkingReq.js";
-import {isLocal} from "../config/cookieInfo.js";
+import {isHttps} from "../config/cookieInfo.js";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ async function register(req , res){
             }
 
             const cookie = {username , email , hashedPassword};
-            res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isLocal , maxAge: 1000 * 60 * 30});
+            res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isHttps , maxAge: 1000 * 60 * 30});
             await sendLinkingReq(req , res);
 
 

@@ -1,1 +1,1 @@
-export const isLocal = process.env.NODE_ENV === "production";
+export const isHttps = process.env.NODE_ENV === "production";

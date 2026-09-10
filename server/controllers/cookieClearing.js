@@ -1,5 +1,6 @@
-export async function clearCookies(res , cookiesNames){
-    for(name in cookiesNames){
-        await res.clearCookie(`${name}`);
+
+export function clearCookies(res, ...cookiesNames) {
+    for (const name of cookiesNames) {
+        res.clearCookie(name);
     }
 }

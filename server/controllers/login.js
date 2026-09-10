@@ -21,12 +21,10 @@ async function login(req ,res){
         return res.status(400).json("user not found");
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(password, salt);
-    const isSame = await bcrypt.compare(hashed, found.password);
+    const isSame = await bcrypt.compare(password, found.password_hash);
 
     if(!isSame){
-        return res.status(401).json("passwords do not match");
+        return res.status(400).json("invalid credentials");
     }
 
 }
