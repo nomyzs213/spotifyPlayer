@@ -1,5 +1,5 @@
-import {isLocal} from "../config/cookieInfo.js";
-export async function sendLinkingReq(req , res, alreadyRegistered) {
+import {isHttps} from "../config/cookieInfo.js";
+export async function sendLinkingReq(req , res, alreadyRegistered = false) {
     const scopes = [
         'user-top-read',
         'user-read-private',
@@ -11,7 +11,6 @@ export async function sendLinkingReq(req , res, alreadyRegistered) {
     ].join(' ');
 
     const state = crypto.randomUUID();
-    res.cookie('state', state, {httpOnly: true, secure: isLocal, maxAge: 1000 * 60 * 60 * 24 * 7});
 
     const params = new URLSearchParams({
         response_type: 'code',
@@ -20,6 +19,10 @@ export async function sendLinkingReq(req , res, alreadyRegistered) {
         scope: scopes,
         state: state
     }).toString();
+
+
+        res.cookie("already_registered" , alreadyRegistered , {httpOnly: true, secure: isHttps, maxAge: 1800 * 1000});
+        res.cookie('state', state, {httpOnly: true, secure: isHttps, maxAge: 1000 * 60 * 60 * 24 * 7});
 
 
     res.redirect('https://accounts.spotify.com/authorize?' + params);

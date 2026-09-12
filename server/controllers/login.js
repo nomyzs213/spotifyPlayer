@@ -2,13 +2,15 @@ import {user , user_token} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
 import {Op} from "sequelize";
 import {getAccessTokenWithCode} from "./token_manager.js";
+import {throwError} from "../utlils/errorManager.js";
 
 async function login(req ,res){
+
     const loggingIdentifier = req.body.username;
     const password = req.body.password;
 
     if(!password || !loggingIdentifier){
-        return res.status(401).json("required data wasn't passed");
+        throwError("missing credentials" , 401);
     }
 
     const found = await user.findOne({
@@ -18,15 +20,13 @@ async function login(req ,res){
     });
 
     if(!found){
-        return res.status(400).json("user not found");
+        throwError("user not found" , 400);
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashed = await bcrypt.hash(password, salt);
-    const isSame = await bcrypt.compare(hashed, found.password);
+    const isSame = await bcrypt.compare(password, found.password_hash);
 
     if(!isSame){
-        return res.status(401).json("passwords do not match");
+        throwError("invalid login credentials" , 400);
     }
 
 }
