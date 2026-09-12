@@ -1,5 +1,6 @@
 import {Buffer} from "node:buffer";
 import {user, user_token} from "../models/table_relations.js";
+import {throwError} from "../utlils/errorManager.js";
 
 const clientSecret = process.env.CLIENT_SECRET;
 const clientId = process.env.CLIENT_ID;
@@ -25,7 +26,7 @@ export async function getAccessTokenWithCode(code){
     })
 
     if(!fetchResponse.ok) {
-        throw new Error('problem with spotify api')
+        throwError("problem with spotify api" , 502);
     }
 
     const data =  await fetchResponse.json();
@@ -55,7 +56,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
     })
 
     if(!result.ok){
-        throw new Error("problem with spotify api");
+        throwError("problem with spotify api" , 502);
     }
 
     const data = await result.json();
@@ -78,7 +79,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
 
         }
         catch (err){
-            throw new Error(err.message);
+            throwError("db error" , 500);
         }
 
         return [access_token, refresh_token, accessExpiresAt];
@@ -96,7 +97,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
             })
         }
         catch(err){
-            throw new Error(err.message);
+            throwError("db error" , 500);
         }
 
         return [access_token ,oldToken , accessExpiresAt];
@@ -109,7 +110,7 @@ export async function setTokens(userId , accessToken, refreshToken , accessExpir
     const found = await user.findByPk(userId);
 
     if (!found) {
-        throw new Error("problem with db");
+        throwError("db error" , 500);
     }
     const userTokens = await user_token.findOne({
         where: {
@@ -123,7 +124,7 @@ export async function setTokens(userId , accessToken, refreshToken , accessExpir
     });
 
     if (!updated) {
-        throw new Error("problem with db");
+        throwError("db error" , 500);
     }
 
 }

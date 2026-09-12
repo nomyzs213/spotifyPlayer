@@ -20,13 +20,10 @@ export async function sendLinkingReq(req , res, alreadyRegistered = false) {
         state: state
     }).toString();
 
-    if(alreadyRegistered) {
-        res.cookie("already_registered" , true , {httpOnly: true, secure: isHttps, maxAge: 1800 * 1000});
-    }
-    else{
+
+        res.cookie("already_registered" , alreadyRegistered , {httpOnly: true, secure: isHttps, maxAge: 1800 * 1000});
         res.cookie('state', state, {httpOnly: true, secure: isHttps, maxAge: 1000 * 60 * 60 * 24 * 7});
-        res.cookie("already_registered", false , {httpOnly: true ,secure: isHttps , maxAge: 1800 * 1000});
-    }
+
 
     res.redirect('https://accounts.spotify.com/authorize?' + params);
 
