@@ -1,20 +1,18 @@
-import express  from "express";
-import * as path from "node:path";
-import cors from "cors";
+
+import path from "node:path";
 import { fileURLToPath } from "node:url";
-import {user , user_token} from "./models/table_relations.js";
-import router from "./routing/accountBinding.js";
-
-import {startDb} from "./config/database.js";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+import express from "express";
+import cors from "cors";
+import { user, user_token } from "./models/table_relations.js";
+import router from "./routing/accountBinding.js";
+import { startDb } from "./config/database.js";
+
+const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/views");
 
@@ -28,7 +26,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(clientPath, "index.html"));
 });
 
-app.all('*', (req, res) => {
+app.all(/(.*)/, (req, res) => {
     res.sendFile(path.join(clientPath, "errors/404.html"));
 });
 

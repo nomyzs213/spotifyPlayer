@@ -1,9 +1,15 @@
-import {Sequelize} from "sequelize";
 import dotenv from "dotenv";
-dotenv.config();
+import path from "node:path";
+import {fileURLToPath} from "node:url";
+import {Sequelize} from "sequelize";
 
-export const sequelize = new Sequelize( process.env.DB_NAME , process.env.DB_USER, process.env.DB_PASSWORD , {
-    dialect: process.env.DIALECT,
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+
+export const sequelize = new Sequelize( String(process.env.DB_NAME) , String(process.env.DB_USER), String(process.env.DB_PASSWORD) , {
+    dialect: "postgres",
     host: "localhost"
 });
 

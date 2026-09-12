@@ -2,20 +2,19 @@ import express from "express";
 import cookieParser from 'cookie-parser';
 import {clientPath} from "../server.js";
 const binding = express.Router();
-import dotenv from "dotenv";
 import {user , user_token}  from "../models/table_relations.js";
 import {clearCookies} from "../controllers/cookieClearing.js";
 import {getAccessTokenWithCode} from "../controllers/token_manager.js";
 import {sequelize} from "../config/database.js";
 import path from "node:path";
-dotenv.config();
 
 binding.use(cookieParser());
 binding.get('/binding' , async (req , res) => {
     const {error , status} = req.query;
+    const alreadyRegistered = req.cookies.already_registered;
 
     if(status === "canceled"){
-         clearCookies(res , "pending_registration" , "state");
+        clearCookies(res , "pending_registration" , "state");
         res.sendFile(path.join(clientPath , "errors/403.html"));
         return;
     }
@@ -26,17 +25,26 @@ binding.get('/binding' , async (req , res) => {
         return;
     }
 
-    try{
-        await bindAccount(req , res);
+    if(alreadyRegistered){
+        try{
+            await bindExistingAccount(req, res);
+        }
+        catch{
+
+        }
     }
-    catch(err){
-        console.error(err);
+
+    try{
+        await bindNewAccount(req , res , alreadyRegistered);
+    }
+    catch{
+
     }
 })
 
 
 
-async function bindAccount(req, res) {
+async function bindNewAccount(req, res , alreadyRegistered) {
     const code = req.query.code;
     const state = req.query.state;
     const stateInCookies = req.cookies.state;
@@ -96,6 +104,47 @@ async function bindAccount(req, res) {
     }
 }
 
+async function bindExistingAccount(req ,res){
+    const {code , state} = req.query;
+    const stateInCookies = req.cookies.state;
+
+    if(!state  || !stateInCookies || !code){
+        return res.status(502).redirect(path.join(clientPath, "errors/502.html"));
+    }
+
+    if(state !== stateInCookies){
+        return
+    }
+
+    const userId = req.cookies.user_id;
+
+    let accessToken ,refreshToken , accessExpiresAt, refreshExpiresAt;
+
+    try{
+        [accessToken, refreshToken  , accessExpiresAt , refreshExpiresAt] = await getAccessTokenWithCode(code);
+    }
+    catch(err){
+        throw new Error(err.message);
+    }
+
+    try{
+       const userTokens = await user_token.findOne({
+            where: {
+                user_id : userId
+            }
+       });
+
+        await userTokens.update({
+            accessToken: accessToken,
+            access_token_expiry: accessExpiresAt,
+            refreshToken: refreshToken,
+            refresh_token_expiry: refreshExpiresAt
+        });
+    }
+    catch (err){
+        throw new Error(err.message);
+    }
+}
 
 
 export default binding;

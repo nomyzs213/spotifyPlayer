@@ -1,11 +1,10 @@
 import bcrypt  from "bcrypt";
-import dotenv from "dotenv";
 import {user} from "../models/user.js";
 import {Op} from "sequelize";
 import {sendLinkingReq} from "./linkingReq.js";
 import {isHttps} from "../config/cookieInfo.js";
 
-dotenv.config();
+
 
 async function register(req , res){
     let {username , email , password} = req.body.registrationData;

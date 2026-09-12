@@ -1,8 +1,5 @@
 import {Buffer} from "node:buffer";
-import dotenv from "dotenv";
 import {user, user_token} from "../models/table_relations.js";
-
-dotenv.config();
 
 const clientSecret = process.env.CLIENT_SECRET;
 const clientId = process.env.CLIENT_ID;
@@ -89,7 +86,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
     }
     else{
         try{
-            await  user_token.update({
+            await user_token.update({
                 access_token: access_token,
                 access_token_expiry: accessExpiresAt
             }, {
