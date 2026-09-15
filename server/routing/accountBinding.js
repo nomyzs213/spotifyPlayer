@@ -106,7 +106,6 @@ async function bindNewAccount(req, res) {
     }
     finally {
         clearCookies(res, 'pending_registration' , 'state');
-        generateSessionToken();
         res.redirect('/login');
     }
 }
@@ -156,7 +155,6 @@ async function bindExistingAccount(req ,res){
     }
     finally {
         clearCookies(res, 'pending_registration' , 'state');
-        generateSessionToken();
         res.redirect('/login');
     }
 }
