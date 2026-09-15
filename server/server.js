@@ -12,13 +12,43 @@ import { user, user_token } from "./models/table_relations.js";
 import { startDb } from "./config/database.js";
 import binding from "./routing/accountBinding.js";
 import session from "express-session";
+import {isHttps} from "./config/cookieInfo.js";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/views");
 
+const sessionStore = connectPgSimple(session);
+const pgPool = new pg.Pool({
+    conObject: {
+        database: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        dialect: "postgres",
+        host: "localhost",
+        port: 5432
+    }
+})
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
-
+    resave: false,
+    saveUninitialized: false,
+    store: new sessionStore({
+       pool: pgPool,
+       tableName: "user_sessions",
+        createTableIfMissing: true
+    }),
+    genid: function (){
+        return crypto.randomUUID();
+    },
+    cookie: {
+        httpOnly: true,
+        secure: isHttps,
+        maxAge: 3600 * 24 * 7 * 1000,
+        sameSite: 'lax'
+    }
 }))
 app.use(cors());
 app.use(express.json());
