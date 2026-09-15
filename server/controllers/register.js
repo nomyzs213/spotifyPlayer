@@ -35,7 +35,8 @@ async function register(req , res){
 
         }
         catch (err){
-            throwError("db error" , 500);
+            if(err.status === 409) throwError(err.message , 409);
+            else throwError("db error", 500);
         }
     }
     else{

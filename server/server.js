@@ -9,22 +9,28 @@ const __dirname = path.dirname(__filename);
 import express from "express";
 import cors from "cors";
 import { user, user_token } from "./models/table_relations.js";
-import router from "./routing/accountBinding.js";
 import { startDb } from "./config/database.js";
-
+import binding from "./routing/accountBinding.js";
+import session from "express-session";
 const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/views");
 
+app.use(session({
+    secret: process.env.SESSION_SECRET,
 
+}))
 app.use(cors());
 app.use(express.json());
 
 await startDb();
 
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(clientPath, "index.html"));
 });
+
+app.use(binding);
 
 app.all(/(.*)/, (req, res) => {
     res.sendFile(path.join(clientPath, "errors/404.html"));
@@ -45,6 +51,10 @@ app.use((err , req ,res , next) => {
 
     if(errorStatus === 404){
         return res.status(errorStatus).sendFile(path.join(clientPath, "errors/404.html"));
+    }
+
+    if(errorStatus === 409){
+        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/409.html"));
     }
 
     if(errorStatus === 500){

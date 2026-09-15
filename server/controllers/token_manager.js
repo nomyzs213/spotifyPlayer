@@ -103,7 +103,6 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
         return [access_token ,oldToken , accessExpiresAt];
     }
 
-
 }
 
 export async function setTokens(userId , accessToken, refreshToken , accessExpiresAt) {
@@ -120,7 +119,8 @@ export async function setTokens(userId , accessToken, refreshToken , accessExpir
 
     const updated = await userTokens.update({
         access_token: accessToken,
-        access_token_expiry: accessExpiresAt
+        access_token_expiry: accessExpiresAt,
+        refresh_token: refreshToken
     });
 
     if (!updated) {
