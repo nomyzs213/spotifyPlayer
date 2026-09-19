@@ -12,5 +12,21 @@ export const sessionActions =  {
         catch (err){
             throw err;
         }
+    },
+
+    updateAccessToken: function (req, token){
+        if(!token || !req?.session.user) return;
+        req.session.user.accessToken = token;
+    },
+
+    updateRefreshToken: function (req ,token){
+        if(!token || !req?.session.user) return;
+        req.session.user.refreshToken = token;
+    },
+
+    updateId: function (req, id){
+        if(!req?.session.user || !id) return;
+        req.session.user.id = id;
     }
+
 };

@@ -82,7 +82,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
             throwError("db error" , 500);
         }
 
-        return [access_token, refresh_token, accessExpiresAt];
+        return setTokens(access_token, refresh_token , accessExpiresAt);
 
     }
     else{
@@ -100,7 +100,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
             throwError("db error" , 500);
         }
 
-        return [access_token ,oldToken , accessExpiresAt];
+        return setTokens(access_token, oldToken , accessExpiresAt);
     }
 
 }
@@ -127,4 +127,5 @@ export async function setTokens(userId , accessToken, refreshToken , accessExpir
         throwError("db error" , 500);
     }
 
+    return true;
 }
