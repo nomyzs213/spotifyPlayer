@@ -40,7 +40,7 @@ binding.get('/binding' , async (req , res , next) => {
     }
     else{
         try{
-            await bindNewAccount(req , res , alreadyRegistered);
+            await bindNewAccount(req , res);
         }
         catch(err){
             return next(err);
@@ -106,8 +106,8 @@ async function bindNewAccount(req, res) {
     }
     finally {
         clearCookies(res, 'pending_registration' , 'state');
-        res.redirect('/login');
     }
+    res.redirect('/login');
 }
 
 async function bindExistingAccount(req ,res){
@@ -155,8 +155,10 @@ async function bindExistingAccount(req ,res){
     }
     finally {
         clearCookies(res, 'pending_registration' , 'state');
-        res.redirect('/login');
     }
+    req.session.regenerate(req);
+    res.redirect('/login');
+
 }
 
 

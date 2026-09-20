@@ -1,6 +1,7 @@
 import {Buffer} from "node:buffer";
 import {user, user_token} from "../models/table_relations.js";
 import {throwError} from "../utlils/errorManager.js";
+import {sessionActions} from "../utlils/session_actions.js";
 
 const clientSecret = process.env.CLIENT_SECRET;
 const clientId = process.env.CLIENT_ID;
@@ -38,7 +39,7 @@ export async function getAccessTokenWithCode(code){
 
 }
 
-export async function getAccessTokenWithRefresh(oldToken, userId){
+export async function getAccessTokenWithRefresh(currentRefreshToken, userId){
     const url = "https://accounts.spotify.com/api/token";
 
     const result = await fetch(url , {
@@ -50,7 +51,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
         body: new URLSearchParams(
             {
                 grant_type: 'refresh_token',
-                refresh_token: oldToken
+                refresh_token: currentRefreshToken
             }
         ).toString()
     })
@@ -65,7 +66,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
     const accessExpiresAt = new Date(Date.now() + expires_in * 1000);
 
 
-    if(refresh_token !== oldToken && refresh_token !== undefined){
+    if(refresh_token !== currentRefreshToken && refresh_token !== undefined){
         try{
             await user_token.update({
                 access_token: access_token,
@@ -100,7 +101,7 @@ export async function getAccessTokenWithRefresh(oldToken, userId){
             throwError("db error" , 500);
         }
 
-        return setTokens(access_token, oldToken , accessExpiresAt);
+        return setTokens(access_token, currentRefreshToken , accessExpiresAt);
     }
 
 }
