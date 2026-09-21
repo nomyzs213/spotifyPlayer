@@ -10,6 +10,7 @@ import path from "node:path";
 import {throwError, createError} from "../utlils/errorManager.js";
 import {where} from "sequelize";
 import {generateSessionToken} from "../utlils/generateSessionToken.js";
+import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 
 binding.use(cookieParser());
 binding.get('/binding' , async (req , res , next) => {
@@ -115,15 +116,16 @@ async function bindExistingAccount(req ,res){
     const stateInCookies = req.cookies.state;
 
     if(!state  || !stateInCookies || !code){
-        throwError("missing params from req.query or from cookies" , 400);
         clearCookies(res, 'pending_registration' , 'state');
+        throwError("missing params from req.query or from cookies" , 400);
     }
 
     if(state !== stateInCookies){
-        throwError("states in cookie is not equal to the one in request" , 400);
         clearCookies(res, 'pending_registration' , 'state');
+        throwError("states in cookie is not equal to the one in request" , 400);
     }
 
+    await checkForCodesRefresh(req, res);
     const userId = req.cookies.user_id;
 
     let accessToken ,refreshToken , accessExpiresAt, refreshExpiresAt;
@@ -132,8 +134,8 @@ async function bindExistingAccount(req ,res){
         [accessToken, refreshToken  , accessExpiresAt , refreshExpiresAt] = await getAccessTokenWithCode(code);
     }
     catch(err){
-        throwError("missing tokens" , 400);
         clearCookies(res, 'pending_registration' , 'state');
+        throwError("missing tokens" , 400);
     }
 
     try{

@@ -35,4 +35,5 @@ class RefreshCodes{
     }
 }
 
-export default new RefreshCodes();
+const refreshing = new RefreshCodes();
+export default refreshing;

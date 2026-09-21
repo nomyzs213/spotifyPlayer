@@ -1,6 +1,6 @@
 import {user , user_token} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
-import {Op, where} from "sequelize";
+import {Op} from "sequelize";
 import {getAccessTokenWithCode} from "./token_manager.js";
 import {throwError} from "../utlils/errorManager.js";
 import {sessionActions} from "../utlils/session_actions.js";
@@ -38,6 +38,6 @@ async function login(req ,res){
         throwError("tokens not found" , 400);
     }
 
-
     sessionActions.createUserInstance(req , found.id , foundTokens.access_token, foundTokens.refresh_token);
+    res.redirect('/dashboard');
 }
