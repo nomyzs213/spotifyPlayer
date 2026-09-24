@@ -8,54 +8,51 @@ import {getAccessTokenWithCode} from "../controllers/token_manager.js";
 import {sequelize} from "../config/database.js";
 import path from "node:path";
 import {throwError, createError} from "../utlils/errorManager.js";
+import {where} from "sequelize";
+import {generateSessionToken} from "../utlils/generateSessionToken.js";
+import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 
 binding.use(cookieParser());
 binding.get('/binding' , async (req , res , next) => {
 
     if(!req.query.code){
-        next(createError("unauthorized request") , 401);
+        next(createError("unauthorized request" , 401));
     }
     const {error , status} = req.query;
     const alreadyRegistered = req.cookies.already_registered;
 
     if(status === "canceled"){
         clearCookies(res , "pending_registration" , "state");
-        return next(createError("binding cancelled") , 400);
+        return next(createError("binding cancelled" , 500));
     }
 
     if(error) {
          clearCookies(res , "pending_registration" , "state");
-         error.status = 502;
-         return next(error);
+         return next(createError("problem with spotify api" , 502));
     }
 
-    if(alreadyRegistered){
+    if(alreadyRegistered === 'true'){
         try{
             await bindExistingAccount(req, res);
-            return;
         }
         catch(err){
-            return next(err)
+            return next(err);
         }
-        finally {
-            clearCookies(res, 'pending_registration' , 'state');
+    }
+    else{
+        try{
+            await bindNewAccount(req , res);
+        }
+        catch(err){
+            return next(err);
         }
     }
 
-    try{
-        await bindNewAccount(req , res , alreadyRegistered);
-    }
-    catch(err){
-        return next(err);
-    }
-    finally {
-        clearCookies(res, 'pending_registration' , 'state');
-    }
 })
 
 
 
-async function bindNewAccount(req, res , next , alreadyRegistered) {
+async function bindNewAccount(req, res) {
     const code = req.query.code;
     const state = req.query.state;
     const stateInCookies = req.cookies.state;
@@ -103,7 +100,6 @@ async function bindNewAccount(req, res , next , alreadyRegistered) {
 
         await t.commit();
 
-        return true;
 
     } catch (err) {
         await t.rollback();
@@ -112,6 +108,7 @@ async function bindNewAccount(req, res , next , alreadyRegistered) {
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
+    res.redirect('/login');
 }
 
 async function bindExistingAccount(req ,res){
@@ -119,15 +116,16 @@ async function bindExistingAccount(req ,res){
     const stateInCookies = req.cookies.state;
 
     if(!state  || !stateInCookies || !code){
-        throwError("missing params from req.query or from cookies" , 400);
         clearCookies(res, 'pending_registration' , 'state');
+        throwError("missing params from req.query or from cookies" , 400);
     }
 
     if(state !== stateInCookies){
-        throwError("states in cookie is not equal to the one in request" , 400);
         clearCookies(res, 'pending_registration' , 'state');
+        throwError("states in cookie is not equal to the one in request" , 400);
     }
 
+    await checkForCodesRefresh(req, res);
     const userId = req.cookies.user_id;
 
     let accessToken ,refreshToken , accessExpiresAt, refreshExpiresAt;
@@ -136,24 +134,23 @@ async function bindExistingAccount(req ,res){
         [accessToken, refreshToken  , accessExpiresAt , refreshExpiresAt] = await getAccessTokenWithCode(code);
     }
     catch(err){
-        throwError("missing tokens" , 400);
         clearCookies(res, 'pending_registration' , 'state');
+        throwError("missing tokens" , 400);
     }
 
     try{
        const userTokens = await user_token.findOne({
-            where: {
-                user_id : userId
-            }
+           where: {
+               user_id: userId
+           }
        });
 
         await userTokens.update({
-            accessToken: accessToken,
+            access_token: accessToken,
             access_token_expiry: accessExpiresAt,
-            refreshToken: refreshToken,
+            refresh_token: refreshToken,
             refresh_token_expiry: refreshExpiresAt
         });
-        return true;
     }
     catch (err){
         throwError("db error" , 500);
@@ -161,6 +158,9 @@ async function bindExistingAccount(req ,res){
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
+    req.session.regenerate(req);
+    res.redirect('/login');
+
 }
 
 

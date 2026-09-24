@@ -9,22 +9,58 @@ const __dirname = path.dirname(__filename);
 import express from "express";
 import cors from "cors";
 import { user, user_token } from "./models/table_relations.js";
-import router from "./routing/accountBinding.js";
 import { startDb } from "./config/database.js";
-
+import binding from "./routing/accountBinding.js";
+import session from "express-session";
+import {isHttps} from "./config/cookieInfo.js";
+import connectPgSimple from "connect-pg-simple";
+import pg from "pg";
 const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/views");
 
+const sessionStore = connectPgSimple(session);
+const pgPool = new pg.Pool({
+    conObject: {
+        database: process.env.DB_NAME,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        dialect: "postgres",
+        host: "localhost",
+        port: 5432
+    }
+})
 
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: new sessionStore({
+       pool: pgPool,
+       tableName: "user_sessions",
+        createTableIfMissing: true
+    }),
+    genid: function (){
+        return crypto.randomUUID();
+    },
+    cookie: {
+        httpOnly: true,
+        secure: isHttps,
+        maxAge: 3600 * 24 * 7 * 1000,
+        sameSite: 'lax'
+    }
+}))
 app.use(cors());
 app.use(express.json());
 
 await startDb();
 
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(clientPath, "index.html"));
 });
+
+app.use(binding);
 
 app.all(/(.*)/, (req, res) => {
     res.sendFile(path.join(clientPath, "errors/404.html"));
@@ -45,6 +81,10 @@ app.use((err , req ,res , next) => {
 
     if(errorStatus === 404){
         return res.status(errorStatus).sendFile(path.join(clientPath, "errors/404.html"));
+    }
+
+    if(errorStatus === 409){
+        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/409.html"));
     }
 
     if(errorStatus === 500){

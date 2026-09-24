@@ -6,7 +6,6 @@ export const user_token = sequelize.define("Token" , {
         type: DataTypes.UUID,
         allowNull: false,
         unique: true
-
     },
 
     access_token: {
