@@ -8,7 +8,7 @@ class RefreshCodes{
     async #refreshAccessToken(req){
         const user = req.session.user;
         if(!user) throwError("user not found , to access this user needs to login" , 401);
-            await getAccessTokenWithRefresh(req.session.refreshToken, user.id);
+            await getAccessTokenWithRefresh(req.session.user.refreshToken, user.id);
            const successful = await sessionActions.updateTokens(req);
            if(!successful) throwError("problem with session" , 500);
     }

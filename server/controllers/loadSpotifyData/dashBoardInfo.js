@@ -1,9 +1,12 @@
 import {throwError} from "../../utlils/errorManager.js";
 import {spotifyFetchSchema} from "../../utlils/spotifyFetchSchema.js";
+import refreshing from "../refreshCodes.js";
+import areCodesExpired from "../../utlils/areCodesExpired.js";
 
 class dashboard{
-    async #getUserProfile(accessToken){
+    async #getUserProfile(req , accessToken){
         const url = "https://api.spotify.com/v1/me";
+        if(!accessToken) throwError("unauthorized access", 401);
 
         const response = await fetch(url, {
             method: "GET",
@@ -75,7 +78,27 @@ class dashboard{
         return [compressedArtists , compressedTracks];
     }
 
+    async loadDashBoard(req , res){
+        const accessToken = req.session.user.accessToken;
+        if(!accessToken) throwError("unauthorized access" ,401);
+
+        await refreshing.refreshTokens(req,res , areCodesExpired(req.session.user.id));
+
+        const userProfile = await this.#getUserProfile(accessToken);
+        const artists = this.#getTopItems(accessToken, "artists");
+        const tracks = this.#getTopItems(accessToken, "tracks");
+        const [compressedArtists , compressedTracks] = this.#getCompressedTopItems(artists, tracks);
+
+        return {
+            compressedTopItems: {
+                artists: compressedArtists,
+                tracks: compressedTracks
+            },
+            userProfile: userProfile
+        }
+    }
 
 }
 
-
+const DashboardLoader = new dashboard();
+export default DashboardLoader;
