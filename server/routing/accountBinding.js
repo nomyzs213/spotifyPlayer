@@ -16,8 +16,9 @@ binding.use(cookieParser());
 binding.get('/binding' , async (req , res , next) => {
 
     if(!req.query.code){
-        next(createError("unauthorized request" , 401));
+        return next(createError("unauthorized request" , 401));
     }
+
     const {error , status} = req.query;
     const alreadyRegistered = req.cookies.already_registered;
 
