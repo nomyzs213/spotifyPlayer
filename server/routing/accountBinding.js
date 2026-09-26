@@ -1,15 +1,13 @@
 import express from "express";
 import cookieParser from 'cookie-parser';
-import {clientPath} from "../server.js";
+
 const binding = express.Router();
 import {user , user_token}  from "../models/table_relations.js";
 import {clearCookies} from "../utlils/cookieClearing.js";
 import {getAccessTokenWithCode} from "../controllers/token_manager.js";
 import {sequelize} from "../config/database.js";
-import path from "node:path";
+
 import {throwError, createError} from "../utlils/errorManager.js";
-import {where} from "sequelize";
-import {generateSessionToken} from "../utlils/generateSessionToken.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 
 binding.use(cookieParser());

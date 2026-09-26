@@ -1,5 +1,4 @@
-import {getAccessTokenWithCode, getAccessTokenWithRefresh} from "./token_manager.js";
-import areCodesExpired from "../utlils/areCodesExpired.js";
+import {getAccessTokenWithRefresh} from "./token_manager.js";
 import {throwError} from "../utlils/errorManager.js";
 import {sendLinkingReq} from "./linkingReq.js";
 import {sessionActions} from "../utlils/session_actions.js";

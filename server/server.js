@@ -56,9 +56,7 @@ app.use(express.json());
 await startDb();
 
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(clientPath, "index.html"));
-});
+
 
 app.use(binding);
 
