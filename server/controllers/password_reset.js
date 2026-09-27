@@ -43,7 +43,6 @@ async function sendResetCode(req, res){
     }
 
     req.cookie('resetSecret' , resetSecret , { httpOnly: true, secure: isHttps, maxAge: 1000 * 900 });
-    req.cookie('userEmail' , email , { httpOnly: true, secure: isHttps, maxAge: 1000 * 900 });
     // expiry takie same co reset token by sie nie rozwalilo po drodze
 
     res.redirect("/password-reset/code");
