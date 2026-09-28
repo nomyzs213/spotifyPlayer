@@ -2,7 +2,7 @@ import {throwError} from "../utlils/errorManager.js";
 import {user} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
 
-export async function changePassword(req , res){
+export async function changePassword(req){
     if(!req.session.user.id) throwError("unauthorized access" , 401);
 
     const foundUser = await user.findByPk(req.session.user.id);
@@ -29,6 +29,5 @@ export async function changePassword(req , res){
     catch(err){
         throwError("problem with db" , 500);
     }
-
 
 }

@@ -1,7 +1,6 @@
 import express from "express";
 import path from "node:path";
 import {clientPath} from "../server";
-import cookieParser from "cookie-parser";
 import {createError} from "../utlils/errorManager";
 
 const basicRoutes = express.Router();
