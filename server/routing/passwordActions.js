@@ -1,11 +1,9 @@
 import express from "express";
 import {createError, throwError} from "../utlils/errorManager";
 import {email_token, user} from "../models/table_relations";
-import {bcrypt} from bcrypt;
+import bcrypt from "bcrypt";
 import { sequelize } from "../config/database";
-import { trace } from "node:console";
 import { changePassword } from "../controllers/password_change";
-import { isHttps } from "../config/cookieInfo";
 import path from "node:path";
 import { clientPath } from "../server";
 
@@ -104,6 +102,8 @@ passwordActions.post('/api/password-reset/code' , async (req, res, next) => {
         }
         return next(createError(`reset token invalid left tries: ${5 - tries}`));
     }
+
+    return res.redirect('/api/reset-password/form');
 })
 
 
@@ -139,7 +139,7 @@ passwordActions.post('/api/password-reset/form' , async(req , res, next) => {
 
         if(!foundToken) return next(createError("couldnt find valid reset token" , 401));
 
-        await email_token.update({
+        await user.update({
             password_hash: hashedPasswordInForm
         }, 
         {transaction: t , where: {id: foundToken.user_id}});
@@ -166,7 +166,7 @@ passwordActions.post('/api/password-change' , async (req, res, next) => {
 });
 
 passwordActions.post('/api/password-reset/completed', async(req, res,  next) => {
-    if(!req.cookies.resetSecret) return next(createError("unauthorized access" , 401));
+    if(!req.cookies.resetSecret) return next(createError("unauthorized access" , 401)); // dodatkowe sprawdznie , moze i nawet nie potrzebne ale kogo to obchodzi
     res.clearCookie('resetSecret');
-    res.sendFile(path.join(clientPath, "password-actions/completed.html"));
+    res.sendFile(path.join(clientPath, "password-actions/completed.html")); // przeniesienie na htmla ktory po okreslonym czasie wysyla na /login
 })
