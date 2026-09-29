@@ -28,8 +28,8 @@ export const sessionActions =  {
 
         if(!found) return false;
 
-        req.session.user.accessToken = found.accessToken;
-        req.session.user.refreshToken = found.refreshToken;
+        req.session.user.accessToken = found.access_token;
+        req.session.user.refreshToken = found.refresh_token;
     },
 
     updateId: function (req, id){

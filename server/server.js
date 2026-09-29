@@ -21,14 +21,12 @@ export const clientPath = path.resolve(__dirname, "../client/views");
 
 const sessionStore = connectPgSimple(session);
 const pgPool = new pg.Pool({
-    conObject: {
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         dialect: "postgres",
         host: "localhost",
         port: 5432
-    }
 })
 
 app.use(session({

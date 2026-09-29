@@ -22,7 +22,7 @@ binding.get('/binding' , async (req , res , next) => {
 
     if(status === "canceled"){
         clearCookies(res , "pending_registration" , "state");
-        return next(createError("binding cancelled" , 500));
+        return next(createError("binding cancelled" , 400));
     }
 
     if(error) {
@@ -123,9 +123,15 @@ async function bindExistingAccount(req ,res){
         clearCookies(res, 'pending_registration' , 'state');
         throwError("states in cookie is not equal to the one in request" , 400);
     }
+    
+    const userId = req.cookies.user_id;
+
+    if(!userId){
+        clearCookies(res, 'pending_registration' , 'state');
+        throwError("uauthorized access" ,401);
+    }
 
     await checkForCodesRefresh(req, res);
-    const userId = req.cookies.user_id;
 
     let accessToken ,refreshToken , accessExpiresAt, refreshExpiresAt;
 
@@ -157,7 +163,10 @@ async function bindExistingAccount(req ,res){
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
-    req.session.regenerate(req);
+    req.session.regenerate((err => {
+        if(err) throwError("session error" , 500);
+    }));
+
     res.redirect('/login');
 
 }

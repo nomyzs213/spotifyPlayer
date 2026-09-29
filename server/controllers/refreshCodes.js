@@ -24,10 +24,22 @@ class RefreshCodes{
 
         if(tokenName === "ACCESS_TOKEN"){
             await this.#refreshAccessToken(req);
+            try{
+                await sessionActions.updateTokens(req);
+            }
+            catch(err){
+                throwError("problem with downloading new tokens" , 500);
+            } 
             return true;
         }
         if(tokenName === "REFRESH_TOKEN"){
             await this.#refreshRefreshToken(req, res);
+              try{
+                await sessionActions.updateTokens(req);
+            }
+            catch(err){
+                throwError("problem with downloading new tokens" , 500);
+            } 
             return true;
         }
         return null;

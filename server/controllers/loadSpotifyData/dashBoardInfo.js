@@ -4,7 +4,7 @@ import refreshing from "../refreshCodes.js";
 import areCodesExpired from "../../utlils/areCodesExpired.js";
 
 class dashboard{
-    async #getUserProfile(req , accessToken){
+    async #getUserProfile( accessToken){
         const url = "https://api.spotify.com/v1/me";
         if(!accessToken) throwError("unauthorized access", 401);
 
@@ -15,7 +15,7 @@ class dashboard{
 
         if(!response.ok) throwError("problem with spotify api" , 500);
 
-        const data = response.json();
+        const data = await response.json();
 
         const {account_id, display_name, images} = data;
 
@@ -43,18 +43,27 @@ class dashboard{
         const [shortTerm , mediumTerm , longTerm]  = await Promise.all(fetches);
 
         if(shortTerm.ok && mediumTerm.ok && longTerm.ok){
-            const shortTermData = await shortTerm.json();
-            const mediumTermData = await mediumTerm.json();
-            const longTermData = await longTerm.json();
+            [shortTermData, mediumTermData, longTermData] = await Promise.all([
+                shortTerm.json(), 
+                mediumTerm.json(),
+                longTerm.json()
+            ])
 
+            return{
+                shortTerm: shortTermData,
+                mediumTerm: mediumTermData,
+                longTerm: longTermData
+            }
         }
+        throwError("problem with downloading data" , 500);
     }
 
      #getCompressedTopItems( artists = {} ,tracks = {} ){
+        if(!req.session.user) throwError("unauthorized access" , 401);
         const compressedArtists = [];
         const compressedTracks = [];
 
-        for(let i = 0; Reflect.ownKeys(artists); i++){
+        for(let i = 0; i< artists.length; i++){
             compressedArtists.push(
                 {
                     name: artists[i].name,
@@ -64,7 +73,7 @@ class dashboard{
             )
         }
 
-        for(let i =0; Reflect.ownKeys(tracks); i++){
+        for(let i =0; i<tracks.length; i++){
             compressedTracks.push(
                 {
                     name: tracks[i].name,
@@ -82,11 +91,11 @@ class dashboard{
         const accessToken = req.session.user.accessToken;
         if(!accessToken) throwError("unauthorized access" ,401);
 
-        await refreshing.refreshTokens(req,res , areCodesExpired(req.session.user.id));
+        await refreshing.refreshTokens(req,res , await areCodesExpired(req.session.user.id));
 
         const userProfile = await this.#getUserProfile(accessToken);
-        const artists = this.#getTopItems(accessToken, "artists");
-        const tracks = this.#getTopItems(accessToken, "tracks");
+        const artists = await this.#getTopItems(accessToken, "artists");
+        const tracks = await this.#getTopItems(accessToken, "tracks");
         const [compressedArtists , compressedTracks] = this.#getCompressedTopItems(artists, tracks);
 
         return {

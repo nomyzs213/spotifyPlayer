@@ -14,3 +14,4 @@ dashboardHandler.post("/api/dashboard" , async (req , res) => {
     res.status(200).json(result);
 });
 
+export default dashboardHandler;
