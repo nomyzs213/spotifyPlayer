@@ -30,6 +30,8 @@ export const sessionActions =  {
 
         req.session.user.accessToken = found.access_token;
         req.session.user.refreshToken = found.refresh_token;
+
+        return true;
     },
 
     updateId: function (req, id){

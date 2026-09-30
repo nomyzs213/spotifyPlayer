@@ -13,13 +13,10 @@ export default  async function areCodesExpired(userId){
     const accessTokenExpiry =  new Date(found.access_token_expiry);
     const refreshTokenExpiry =  new Date(found.refresh_token_expiry);
 
+    if(refreshTokenExpiry <= Date.now()) return [true , "REFRESH_TOKEN" , found.refresh_token];
     if(accessTokenExpiry <= Date.now()) return [true , "ACCESS_TOKEN" , found.access_token];
-    // do naprawy , trzeba czekac na sprawdzenie 2  bo te 2 odswieza to i to 
-    if(refreshTokenExpiry <= Date.now()) return [true , "REFRESH_TOKEN" , found.refresh_token]; 
 
-    return [false , null];
-
-
+    return [false, null, null];
 }
 
 

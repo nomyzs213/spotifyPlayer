@@ -53,9 +53,6 @@ app.use(express.json());
 
 await startDb();
 
-
-
-
 app.use(binding);
 
 app.all(/(.*)/, (req, res) => {

@@ -43,7 +43,7 @@ class dashboard{
         const [shortTerm , mediumTerm , longTerm]  = await Promise.all(fetches);
 
         if(shortTerm.ok && mediumTerm.ok && longTerm.ok){
-            [shortTermData, mediumTermData, longTermData] = await Promise.all([
+            const [shortTermData, mediumTermData, longTermData] = await Promise.all([
                 shortTerm.json(), 
                 mediumTerm.json(),
                 longTerm.json()
@@ -58,7 +58,7 @@ class dashboard{
         throwError("problem with downloading data" , 500);
     }
 
-     #getCompressedTopItems( artists = {} ,tracks = {} ){
+     #getCompressedTopItems( req , artists = {} ,tracks = {} ){
         if(!req.session.user) throwError("unauthorized access" , 401);
         const compressedArtists = [];
         const compressedTracks = [];
@@ -96,7 +96,7 @@ class dashboard{
         const userProfile = await this.#getUserProfile(accessToken);
         const artists = await this.#getTopItems(accessToken, "artists");
         const tracks = await this.#getTopItems(accessToken, "tracks");
-        const [compressedArtists , compressedTracks] = this.#getCompressedTopItems(artists, tracks);
+        const [compressedArtists , compressedTracks] = this.#getCompressedTopItems(req , artists, tracks);
 
         return {
             compressedTopItems: {

@@ -13,9 +13,7 @@ class RefreshCodes{
     }
 
     async #refreshRefreshToken(req , res){
-            await sendLinkingReq(req , res , true);
-        const successful = await sessionActions.updateTokens(req);
-        if(!successful) throwError("problem with session" , 500);
+        await sendLinkingReq(req , res , true);
     }
 
     async refreshTokens(req, res, areCodesExpired){

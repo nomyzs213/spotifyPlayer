@@ -9,6 +9,7 @@ import {sequelize} from "../config/database.js";
 
 import {throwError, createError} from "../utlils/errorManager.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
+import {sessionActions} from "../utlils/session_actions";
 
 binding.use(cookieParser());
 binding.get('/binding' , async (req , res , next) => {
@@ -123,15 +124,9 @@ async function bindExistingAccount(req ,res){
         clearCookies(res, 'pending_registration' , 'state');
         throwError("states in cookie is not equal to the one in request" , 400);
     }
-    
-    const userId = req.cookies.user_id;
-
-    if(!userId){
-        clearCookies(res, 'pending_registration' , 'state');
-        throwError("uauthorized access" ,401);
-    }
 
     await checkForCodesRefresh(req, res);
+    const userId = req.cookies.user_id;
 
     let accessToken ,refreshToken , accessExpiresAt, refreshExpiresAt;
 
@@ -163,10 +158,11 @@ async function bindExistingAccount(req ,res){
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
-    req.session.regenerate((err => {
-        if(err) throwError("session error" , 500);
-    }));
 
+    const found = await sessionActions.updateTokens(req);
+    if(!found) throwError('problem with session' ,400);
+
+    req.session.regenerate(req);
     res.redirect('/login');
 
 }
