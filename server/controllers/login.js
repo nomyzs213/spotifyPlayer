@@ -1,7 +1,6 @@
 import {user , user_token} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
 import {Op} from "sequelize";
-import {getAccessTokenWithCode} from "./token_manager.js";
 import {throwError} from "../utlils/errorManager.js";
 import {sessionActions} from "../utlils/session_actions.js";
 

@@ -1,5 +1,4 @@
-import {getAccessTokenWithCode, getAccessTokenWithRefresh} from "./token_manager.js";
-import areCodesExpired from "../utlils/areCodesExpired.js";
+import {getAccessTokenWithRefresh} from "./token_manager.js";
 import {throwError} from "../utlils/errorManager.js";
 import {sendLinkingReq} from "./linkingReq.js";
 import {sessionActions} from "../utlils/session_actions.js";
@@ -14,9 +13,7 @@ class RefreshCodes{
     }
 
     async #refreshRefreshToken(req , res){
-            await sendLinkingReq(req , res , true);
-        const successful = await sessionActions.updateTokens(req);
-        if(!successful) throwError("problem with session" , 500);
+        await sendLinkingReq(req , res , true);
     }
 
     async refreshTokens(req, res, areCodesExpired){
@@ -25,10 +22,22 @@ class RefreshCodes{
 
         if(tokenName === "ACCESS_TOKEN"){
             await this.#refreshAccessToken(req);
+            try{
+                await sessionActions.updateTokens(req);
+            }
+            catch(err){
+                throwError("problem with downloading new tokens" , 500);
+            } 
             return true;
         }
         if(tokenName === "REFRESH_TOKEN"){
             await this.#refreshRefreshToken(req, res);
+              try{
+                await sessionActions.updateTokens(req);
+            }
+            catch(err){
+                throwError("problem with downloading new tokens" , 500);
+            } 
             return true;
         }
         return null;

@@ -1,29 +1,29 @@
 import express from "express";
 import cookieParser from 'cookie-parser';
-import {clientPath} from "../server.js";
+
 const binding = express.Router();
 import {user , user_token}  from "../models/table_relations.js";
 import {clearCookies} from "../utlils/cookieClearing.js";
 import {getAccessTokenWithCode} from "../controllers/token_manager.js";
 import {sequelize} from "../config/database.js";
-import path from "node:path";
+
 import {throwError, createError} from "../utlils/errorManager.js";
-import {where} from "sequelize";
-import {generateSessionToken} from "../utlils/generateSessionToken.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
+import {sessionActions} from "../utlils/session_actions";
 
 binding.use(cookieParser());
 binding.get('/binding' , async (req , res , next) => {
 
     if(!req.query.code){
-        next(createError("unauthorized request" , 401));
+        return next(createError("unauthorized request" , 401));
     }
+
     const {error , status} = req.query;
     const alreadyRegistered = req.cookies.already_registered;
 
     if(status === "canceled"){
         clearCookies(res , "pending_registration" , "state");
-        return next(createError("binding cancelled" , 500));
+        return next(createError("binding cancelled" , 400));
     }
 
     if(error) {
@@ -158,6 +158,10 @@ async function bindExistingAccount(req ,res){
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
+
+    const found = await sessionActions.updateTokens(req);
+    if(!found) throwError('problem with session' ,400);
+
     req.session.regenerate(req);
     res.redirect('/login');
 
