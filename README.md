@@ -1,4 +1,4 @@
-# 🎵 Spotify Player App
+# 🎵 Spotify Player App(still in development)
 
 A full-stack web application that integrates with the official **Spotify Web API**. Users can log in with their Spotify account, authenticate via OAuth 2.0, have their sessions managed securely, and interact with Spotify services.
 
