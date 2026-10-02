@@ -20,7 +20,7 @@ A full-stack web application that integrates with the official **Spotify Web API
 - **Database:** PostgreSQL, Sequelize ORM
 - **Authentication:** OAuth 2.0 (Spotify Web API)
 - **Libraries & Tools:**
-  `axios`, `bcrypt`, `connect-pg-simple`, `cookie-parser`, `dotenv`, `express`, `express-session`, `nodemailer`, `pg`, `sequelize`
+  `bcrypt`, `connect-pg-simple`, `cookie-parser`, `dotenv`, `express`, `express-session`, `nodemailer`, `pg`, `sequelize`
 
 ---
 
