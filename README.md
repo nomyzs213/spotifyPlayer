@@ -17,6 +17,7 @@ A full-stack web application that integrates with the official **Spotify Web API
 ## 🛠️ Tech Stack
 
 - **Backend:** Node.js, Express.js
+- **Frontend:** - doesnt exists for now ,there is a change i will try to do it in react
 - **Database:** PostgreSQL, Sequelize ORM
 - **Authentication:** OAuth 2.0 (Spotify Web API)
 - **Libraries & Tools:**
