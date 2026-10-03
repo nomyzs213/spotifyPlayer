@@ -16,6 +16,10 @@ export const sessionActions =  {
         }
     },
 
+    createPlaylistsInstance: function (req, playlists){
+        req.session.playlists = playlists;
+    },
+
     updateTokens: async function(req){
 
         if(!req?.session?.user) return false;

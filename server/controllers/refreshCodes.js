@@ -32,6 +32,10 @@ class RefreshCodes{
         }
         if(tokenName === "REFRESH_TOKEN"){
             await this.#refreshRefreshToken(req, res);
+            // treba poprawic by najpierw byl redirect na strone ze
+            // robimy redirect a potem dopiero lecimy na nowa strone
+            // czyli logika przechodzi na  await sendLinkingReq(req , res , true);
+
               try{
                 await sessionActions.updateTokens(req);
             }
