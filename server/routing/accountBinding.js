@@ -165,6 +165,7 @@ async function bindExistingAccount(req ,res){
     req.session.regenerate(req);
     res.redirect('/login');
 
+    return true;
 }
 
 

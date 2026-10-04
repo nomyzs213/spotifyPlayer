@@ -20,6 +20,10 @@ class RefreshCodes{
         const [isExpired , tokenName] = areCodesExpired;
         if(!isExpired) return false;
 
+        if(tokenName === "REFRESH_TOKEN"){
+            return await this.#refreshRefreshToken(req, res);
+        }
+
         if(tokenName === "ACCESS_TOKEN"){
             await this.#refreshAccessToken(req);
             try{
@@ -30,20 +34,7 @@ class RefreshCodes{
             } 
             return true;
         }
-        if(tokenName === "REFRESH_TOKEN"){
-            await this.#refreshRefreshToken(req, res);
-            // treba poprawic by najpierw byl redirect na strone ze
-            // robimy redirect a potem dopiero lecimy na nowa strone
-            // czyli logika przechodzi na  await sendLinkingReq(req , res , true);
 
-              try{
-                await sessionActions.updateTokens(req);
-            }
-            catch(err){
-                throwError("problem with downloading new tokens" , 500);
-            } 
-            return true;
-        }
         return null;
     }
 }
