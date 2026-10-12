@@ -1,9 +1,14 @@
 import {sequelize} from "../config/database";
 import {DataTypes} from "sequelize";
 
-// zeby nie meczyc caly czas req do last fm zapisujemy juz sfetchowane piosenki
-// a potem jak juz ja mamy to dane o niej z bazy pobieramy a nie z last.fm
-const fetched_songs = sequelize.define("fetchedSong", {
+export const fetched_songs = sequelize.define("fetchedSong", {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        validate: {
+            allowNull: false
+        }
+    },
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -21,7 +26,6 @@ const fetched_songs = sequelize.define("fetchedSong", {
         }
     },
     tags: {
-        type: DataTypes.ARRAY(DataTypes.ARRAY),
-
+        type: DataTypes.ARRAY(),
     }
 });

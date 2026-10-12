@@ -3,6 +3,8 @@ import {spotifyFetchSchema} from "../../utlils/spotifyFetchSchema";
 import {sessionActions} from "../../utlils/session_actions";
 import areCodesExpired from "../../utlils/areCodesExpired";
 import refreshing from "../refreshCodes.js";
+import {fetched_songs} from "../../models/fetched_songs";
+import gemini from "../../utlils/geminiAI";
 
     class playlistsManager{
         constructor() {
@@ -133,24 +135,62 @@ import refreshing from "../refreshCodes.js";
         async #getSongsMoodTags(req, res, allSongs){
             if(!req.session.user) throwError("unauthorized access", 401);
 
-            const matchingSons = [];
+            const matchingSongs = [];
 
             for(const item of allSongs){
                 const artist = item.track.artists[0];
                 const songName = item.track.name;
-                const response = await fetch(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${process.env.LAST_FM_API_KEY}&artist=${artist}&track=${songName}&format=json`);
-                if(!response.ok) throwError("problem with last.fm" , 500);
 
-                const data = await response.json();
-                const rawTags = data.track.toptags.tag || [];
-                const tagNames = rawTags.map(t => t.toLowerCase());
+                let found;
+                try{
+                     found = await fetched_songs.findOne({
+                        where: {
+                            artist: artist,
+                            name: songName
+                        }
+                    });
+                }
+                catch (err){
+                    throwError("problem with db" , 500);
+                }
 
-                if(this.#matchesMood(req, tagNames)) matchingSons.push(item.track);
+                let tagNames = [];
+                if(found){
+                    tagNames = [...found.tags];
+                }
+                else{
+                    const response = await fetch(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${process.env.LAST_FM_API_KEY}&artist=${artist}&track=${songName}&format=json`);
+                    if(!response.ok) throwError("problem with last.fm" , 500);
+
+                    const data = await response.json();
+                    const rawTags = data.track.toptags.tag || [];
+                    // z last fm moze byc pusta tablica wiec dla niszowych piosenek szukamy prze ai
+
+                    if(rawTags === []) {
+                        tagNames = await gemini.evaluateTrackTags(artist , songName);
+                    }
+                    else{
+                        tagNames = rawTags.map(t => t.toLowerCase());
+                    }
+
+                    try{
+                        await fetched_songs.create({
+                            name: songName,
+                            artist: artist,
+                            tags: tagNames
+                        })
+                    }
+                    catch (err){
+                        throwError("problem with db" , 500);
+                    }
+
+                }
+                if(this.#matchesMood(req, tagNames)) matchingSongs.push(item.track);
                 setTimeout(() => {} , 200);
                 // max 5 req na sek czytajac z ich docsow
             }
 
-            if(matchingSons.length > 0) return matchingSons;
+            if(matchingSongs.length > 0) return matchingSongs;
             return null;
         }
 
@@ -210,6 +250,8 @@ import refreshing from "../refreshCodes.js";
 
             return uris.length;
         }
+
+
         async proceed(req, res){
             const allSongs = await this.#getTracksDetails(req, res);
             const matchingSongs = await this.#getSongsMoodTags(req, res, allSongs);
@@ -232,10 +274,4 @@ import refreshing from "../refreshCodes.js";
     const playlistManager = new playlistsManager();
     export default playlistManager;
 
-    // do poprawy / dodania:
-    /*
-        -sprawdzanie czy piosenka jest sfetchowana w bazie danych
-        -aby to zrobic skoczyczenie pisania tabeli w bazie i dodanie jej do
-        relacji jesli trzeba
-     */
 
