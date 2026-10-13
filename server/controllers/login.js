@@ -20,7 +20,7 @@ async function login(req ,res){
     });
 
     if(!found){
-        throwError("user not found" , 400);
+        throwError("user not found" , 404);
     }
 
     const isSame = await bcrypt.compare(password, found.password_hash);
@@ -40,3 +40,5 @@ async function login(req ,res){
     sessionActions.createUserInstance(req , found.id , foundTokens.access_token, foundTokens.refresh_token);
     res.redirect('/dashboard');
 }
+
+export default login;

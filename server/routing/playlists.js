@@ -1,8 +1,9 @@
 import express from "express";
 import playlistManager from "../controllers/loadSpotifyData/playlistManager.js";
-const router = express.Router();
+const loadPlaylists = express.Router();
 
-router.get('/api/getPlaylists' , async (req, res, next) => {
+
+loadPlaylists.get('/api/getPlaylists' , async (req, res, next) => {
     let playlists;
     try{
         playlists = await playlistManager.getUserPlaylists(req, res);
@@ -17,7 +18,7 @@ router.get('/api/getPlaylists' , async (req, res, next) => {
 
 })
 
-router.get('/api/generatePlaylists' , async (req, res , next) => {
+loadPlaylists.get('/api/generatePlaylists' , async (req, res , next) => {
     try{
         await playlistManager.proceed(req, res);
     }
@@ -25,3 +26,6 @@ router.get('/api/generatePlaylists' , async (req, res , next) => {
         return next(err);
     }
 });
+
+
+export default loadPlaylists;

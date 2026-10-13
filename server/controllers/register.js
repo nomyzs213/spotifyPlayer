@@ -32,7 +32,6 @@ async function register(req , res){
             res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isHttps , maxAge: 1000 * 60 * 30});
             await sendLinkingReq(req , res);
 
-
         }
         catch (err){
             if(err.status === 409) throwError(err.message , 409);
@@ -43,3 +42,5 @@ async function register(req , res){
         throwError("invalid login credentials" , 400);
     }
 }
+
+export default register;
