@@ -10,10 +10,12 @@ class dashboard{
 
         const response = await fetch(url, {
             method: "GET",
-            headers: spotifyFetchSchema.basicHeader(accessToken)
+            headers: {
+                Authorization: spotifyFetchSchema.basicHeader(accessToken)
+            }
         });
 
-        if(!response.ok) throwError("problem with spotify api" , 500);
+        if(!response.ok) throwError(response.statusText, response.status);
 
         const data = await response.json();
 
@@ -25,8 +27,8 @@ class dashboard{
     async #getTopItems(accessToken , type){
         const url = "https://api.spotify.com/v1/me/top/";
         const timeRanges = ["short_term" , "medium_term" , "long_term"];
-        const limit = 5;
-        const offset = 0;
+        const limit = "5";
+        const offset = "0";
         const fetches = new Array(3);
 
         for(let i = 0; i<= 2; i++) {

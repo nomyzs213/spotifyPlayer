@@ -26,9 +26,7 @@ export async function getAccessTokenWithCode(code){
         body: bodyContent
     })
 
-    if(!fetchResponse.ok) {
-        throwError("problem with spotify api" , 502);
-    }
+    if(!fetchResponse.ok) throwError(fetchResponse.statusText , fetchResponse.status);
 
     const data =  await fetchResponse.json();
     const {access_token, expires_in , refresh_token} = data;

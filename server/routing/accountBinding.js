@@ -12,7 +12,7 @@ import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 import {sessionActions} from "../utlils/session_actions";
 
 binding.use(cookieParser());
-binding.get('/binding' , async (req , res , next) => {
+binding.get('/api/binding' , async (req , res , next) => {
 
     if(!req.query.code){
         return next(createError("unauthorized request" , 401));
@@ -165,6 +165,7 @@ async function bindExistingAccount(req ,res){
     req.session.regenerate(req);
     res.redirect('/login');
 
+    return true;
 }
 
 

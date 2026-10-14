@@ -8,9 +8,20 @@ const __dirname = path.dirname(__filename);
 
 import express from "express";
 import cors from "cors";
+
 import { user, user_token } from "./models/table_relations.js";
 import { startDb } from "./config/database.js";
+
+// wszystkie routery
 import binding from "./routing/accountBinding.js";
+import proceedLogout from "./controllers/logout.js";
+import dashboardHandler from "./routing/dashboard.js";
+import passwordActions from "./routing/passwordActions.js";
+import loadPlaylists from "./routing/playlists.js";
+import proceedLogin from "./routing/processLogin.js";
+import proceedRegistration from "./routing/processRegistration.js";
+import playlistGenerator from "./routing/generatePlaylists.js";
+
 import session from "express-session";
 import {isHttps} from "./config/cookieInfo.js";
 import connectPgSimple from "connect-pg-simple";
@@ -24,7 +35,6 @@ const pgPool = new pg.Pool({
         database: process.env.DB_NAME,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        dialect: "postgres",
         host: "localhost",
         port: 5432
 })
@@ -50,10 +60,20 @@ app.use(session({
 }))
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 await startDb();
 
+// wszystkie routery
+
 app.use(binding);
+app.use(proceedLogout);
+app.use(dashboardHandler);
+app.use(passwordActions);
+app.use(loadPlaylists);
+app.use(proceedLogin);
+app.use(proceedRegistration);
+app.use(playlistGenerator);
 
 app.all(/(.*)/, (req, res) => {
     res.sendFile(path.join(clientPath, "errors/404.html"));
