@@ -18,7 +18,7 @@ class dashboard{
         if(!response.ok) throwError(response.statusText, response.status);
 
         const data = await response.json();
-
+        if(!data.account_id) throwError(data.message, data.status);
         const {account_id, display_name, images} = data;
 
         return [account_id, display_name, images];

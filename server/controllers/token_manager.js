@@ -59,8 +59,9 @@ export async function getAccessTokenWithRefresh(currentRefreshToken, userId){
     }
 
     const data = await result.json();
-
     const {access_token, expires_in , refresh_token} = data;
+    if(!access_token) throwError(data.message, data.status);
+
     const accessExpiresAt = new Date(Date.now() + expires_in * 1000);
 
 
