@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
+
+
+.user-icon-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2vw;
+}
+
+.user-profile-menu{
+    display: flex;
+    height: 4vh;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1vw;
+}
+
+.logout-btn:hover{
+    border-top: 1px solid black;
+    color: red;
+}
+
+.user-icon-img{
+    height: 5vh;
+    width: 5vh;
+}

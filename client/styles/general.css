@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Monomaniac One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: white;
+    text-align: center;
+}
+
+.register-btn{
+    border-radius: 33rem;
+    background-color: #4AAE17;
+    font-size: 1.5rem;
+    border: none;
+    width: 15vw;
+    margin-top: 2vh;
+    margin-bottom: 3vh;
+    padding: 0.4rem;
+}
+
+.register-btn:hover{
+    background-color: #52a32f;
+}
