@@ -63,6 +63,7 @@ class Tracks{
                 artists: el.track.artists,
                 cover: el.track.album?.images[0]
             }
-        })
+        });
     }
+
 }

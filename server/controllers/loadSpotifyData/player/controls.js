@@ -179,4 +179,6 @@ class Controls{
     }
 
 }
+const controls = new Controls();
+export default controls;
 
