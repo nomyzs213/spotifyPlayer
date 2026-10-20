@@ -20,13 +20,13 @@ async function login(req ,res){
     });
 
     if(!found){
-        throwError("user not found" , 404);
+        return res.status(400).json({message: "user of given credentials does not exist" , status: 400});
     }
 
     const isSame = await bcrypt.compare(password, found.password_hash);
 
     if(!isSame){
-        throwError("invalid credentials" , 400);
+        return res.status(400).json({message: "invalid credentials" , status: 400})
     }
 
     const foundTokens  = await user_token.findOne(

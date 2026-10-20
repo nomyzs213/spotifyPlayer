@@ -7,6 +7,8 @@
     font-style: normal;
     color: white;
     text-align: center;
+    text-decoration: none;
+
 }
 
 .register-btn{
@@ -22,4 +24,18 @@
 
 .register-btn:hover{
     background-color: #52a32f;
+}
+
+body{
+    background-color : #1E1E1E;
+}
+
+.basic-input{
+    width: 20vw;
+    height: 5vh;
+    padding: 1rem;
+}
+
+label{
+    margin-right: 10vw;
 }

@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
 
 
-body{
-    background-color: #1E1E1E;
-}
-
 .main-text{
     letter-spacing: 1.75rem;
     margin: 1rem;
@@ -26,5 +22,12 @@ main{
     align-items: center;
     justify-content: center;
     gap: 4rem;
-    margin-bottom: 5vh;
+    margin-bottom: 3vh;
+}
+
+.redirect-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
