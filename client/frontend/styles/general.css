@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -8,21 +9,23 @@
     color: white;
     text-align: center;
     text-decoration: none;
-
 }
 
-.register-btn{
+h1{
+    font-size: 5vh;
+}
+.register-btn , .login-btn{
     border-radius: 33rem;
     background-color: #4AAE17;
     font-size: 1.5rem;
     border: none;
-    width: 15vw;
+    width: fit-content;
     margin-top: 2vh;
     margin-bottom: 3vh;
-    padding: 0.4rem;
+    padding: 10%;
 }
 
-.register-btn:hover{
+.register-btn:hover , .login-btn:hover{
     background-color: #52a32f;
 }
 
@@ -30,12 +33,20 @@ body{
     background-color : #1E1E1E;
 }
 
+label{
+    font-size: 1.5rem;
+}
 .basic-input{
     width: 20vw;
     height: 5vh;
     padding: 1rem;
+    margin-bottom: 4vh;
+    border: none;
+    border-radius: 10rem;
+    margin-left: 5vw;
+    color: black;
 }
 
-label{
-    margin-right: 10vw;
+.basic-input:focus{
+    outline: black 3px solid;
 }

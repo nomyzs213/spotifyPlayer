@@ -1,5 +1,5 @@
 import "./top-menu.css";
-import "../../../../styles/general.css"
+import "../../../styles/general.css"
 import {ProfileButton} from "../profile_icon/profileButton.jsx";
 export const TopMenu = ({username, profileImgSrc}) => {
 

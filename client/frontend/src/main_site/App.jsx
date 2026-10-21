@@ -1,6 +1,6 @@
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "./main-site.css";
-import "../../../styles/general.css"
+import "../../styles/general.css"
 function App() {
 
   return (
@@ -13,7 +13,7 @@ function App() {
 
             <div className={"redirect-container"}>
               <button className={"register-btn"}><a href={"register"}>register</a></button>
-              <a href={"/how"}> HOW THIS WORKS?</a>
+              <a href={"/how"} className={"how"}> HOW THIS WORKS?</a>
             </div>
         </main>
 
@@ -22,4 +22,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

@@ -1,5 +1,5 @@
 import "./profile-icon.css";
-import "../../../../styles/general.css"
+import "../../../styles/general.css"
 
 import {useState} from "react";
 

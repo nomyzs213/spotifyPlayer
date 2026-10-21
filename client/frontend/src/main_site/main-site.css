@@ -1,11 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
 
-
-.main-text{
-    letter-spacing: 1.75rem;
-    margin: 1rem;
+.main-text {
+    letter-spacing: clamp(1rem, 1.75rem, 2.2rem);
+    margin: 2.5%;
+    font-size: clamp(0.6rem, 2.2rem, 5rem);
 }
-
 #tilt1{
     transform: rotate(9deg);
 }
@@ -15,6 +13,8 @@
 #tilt3{
     transform: rotate(3deg);
 }
+
+
 main{
     margin-top: 15vh;
     display: flex;

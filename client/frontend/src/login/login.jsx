@@ -1,6 +1,6 @@
-import {StrictMode, useState} from "react";
+import {useState} from "react";
 import "./login-page.css";
-import "../../../../styles/general.css";
+import "../../styles/general.css";
 
 export const LoginPage = () => {
 
@@ -51,11 +51,11 @@ export const LoginPage = () => {
         <>
             <section className={"form-section"}>
                 <h1>Log in</h1>
-                <label> email or username <input type={"text"} className={"basic-input"} id={"email-input"}/>  </label>
+                <label> email or username <input type={"text"} className={"basic-input"} id={"email-input"} placeholder={"username..."}/>  </label>
                 <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
 
                 <div className={"send-fetch-container"}>
-                    <button onClick={() => throwOrLogin()} > log in</button>
+                    <button onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
                     <p hidden={!errorMessage}></p>
                 </div>
             </section>
