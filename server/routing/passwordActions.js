@@ -1,11 +1,11 @@
 import express from "express";
-import {createError, throwError} from "../utlils/errorManager";
-import {email_token, user} from "../models/table_relations";
+import {createError, throwError} from "../utlils/errorManager.js";
+import {email_token, user} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
-import { sequelize } from "../config/database";
-import { changePassword } from "../controllers/password_change";
+import { sequelize } from "../config/database.js";
+import { changePassword } from "../controllers/password_change.js";
 import path from "node:path";
-import { clientPath } from "../server";
+import { clientPath } from "../server.js";
 
 const passwordActions = express.Router();
 

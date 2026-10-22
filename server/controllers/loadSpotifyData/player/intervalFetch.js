@@ -1,8 +1,8 @@
-import {throwError} from "../../../utlils/errorManager";
-import refreshing from "../../refreshCodes";
-import areCodesExpired from "../../../utlils/areCodesExpired";
-import {spotifyFetchSchema} from "../../../utlils/spotifyFetchSchema";
-import controls from "./controls";
+import {throwError} from "../../../utlils/errorManager.js";
+import refreshing from "../../refreshCodes.js";
+import areCodesExpired from "../../../utlils/areCodesExpired.js";
+import {spotifyFetchSchema} from "../../../utlils/spotifyFetchSchema.js";
+import controls from "./controls.js";
 
 
 class IntervalFetch{

@@ -1,10 +1,10 @@
-import {throwError} from "../../utlils/errorManager";
-import {spotifyFetchSchema} from "../../utlils/spotifyFetchSchema";
-import {sessionActions} from "../../utlils/session_actions";
-import areCodesExpired from "../../utlils/areCodesExpired";
+import {throwError} from "../../utlils/errorManager.js";
+import {spotifyFetchSchema} from "../../utlils/spotifyFetchSchema.js";
+import {sessionActions} from "../../utlils/session_actions.js";
+import areCodesExpired from "../../utlils/areCodesExpired.js";
 import refreshing from "../refreshCodes.js";
-import {fetched_songs} from "../../models/fetched_songs";
-import gemini from "../../utlils/geminiAI";
+import {fetched_songs} from "../../models/fetched_songs.js";
+import gemini from "../../utlils/geminiAI.js";
 
     class playlistsManager{
         constructor() {

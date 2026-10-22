@@ -1,7 +1,7 @@
 import transporter from "../utlils/mailerInstance.js";
 import {user, email_token} from "../models/table_relations.js";
-import {throwError} from "../utlils/errorManager";
-import {isHttps} from "../config/cookieInfo";
+import {throwError} from "../utlils/errorManager.js";
+import {isHttps} from "../config/cookieInfo.js";
 
 async function sendResetCode(req, res){
 

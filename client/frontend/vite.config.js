@@ -7,9 +7,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'htmls/index.html'),
-        login: resolve(__dirname, 'htmls/login.html'),
-        dashboard: resolve(__dirname, 'htmls/dashboard.html'),
+        main: resolve(import.meta.dirname, 'htmls/index.html'),
+        login: resolve(import.meta.dirname, 'htmls/login.html'),
+        dashboard: resolve(import.meta.dirname, 'htmls/dashboard.html'),
       },
     },
   },
@@ -23,4 +23,3 @@ export default defineConfig({
     }
   }
 })
-

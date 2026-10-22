@@ -19,8 +19,8 @@ h1{
     background-color: #4AAE17;
     font-size: 1.5rem;
     border: none;
-    width: fit-content;
-    margin-top: 2vh;
+    width: clamp(4vw , 6vw, 10vw);
+    margin-top: auto;
     margin-bottom: 3vh;
     padding: 10%;
 }
@@ -34,7 +34,7 @@ body{
 }
 
 label{
-    font-size: 1.5rem;
+    font-size: clamp(0.9rem ,1.5rem , 1.8rem);
 }
 .basic-input{
     width: 20vw;
@@ -49,4 +49,8 @@ label{
 
 .basic-input:focus{
     outline: black 3px solid;
+}
+
+.loading{
+    font-size: clamp(3rem , 4rem , 5rem);
 }

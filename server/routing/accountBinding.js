@@ -9,7 +9,7 @@ import {sequelize} from "../config/database.js";
 
 import {throwError, createError} from "../utlils/errorManager.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
-import {sessionActions} from "../utlils/session_actions";
+import {sessionActions} from "../utlils/session_actions.js";
 
 binding.use(cookieParser());
 binding.get('/api/binding' , async (req , res , next) => {

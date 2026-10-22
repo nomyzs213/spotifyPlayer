@@ -1,7 +1,7 @@
 import express from "express";
 import path from "node:path";
-import {clientPath} from "../server";
-import login from "../controllers/login";
+import {clientPath} from "../server.js";
+import login from "../controllers/login.js";
 const proceedLogin =  express.Router();
 
 

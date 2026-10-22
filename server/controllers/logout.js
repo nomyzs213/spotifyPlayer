@@ -1,4 +1,4 @@
-import {createError, throwError} from "../utlils/errorManager.js";
+import {throwError} from "../utlils/errorManager.js";
 
 export default async function proceedLogout(req, res){
     if(req.session){
@@ -9,5 +9,5 @@ export default async function proceedLogout(req, res){
         });
         res.clearCookie('connect.sid');
     }
-     throwError("cannot access logout without session", 401);
+     else throwError("cannot access logout without session", 401);
 }

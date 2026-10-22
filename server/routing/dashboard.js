@@ -1,7 +1,7 @@
 import DashboardLoader from "../controllers/loadSpotifyData/dashBoardInfo.js";
 import express from "express";
 import path from "node:path";
-import {clientPath} from "../server";
+import {clientPath} from "../server.js";
 
 const dashboardHandler =  express.Router();
 
