@@ -9,12 +9,12 @@ proceedLogin.get('/login', (req, res) => {
     res.sendFile(path.join(clientPath, "login.html"));
 });
 
-proceedLogin.get('api/login', async (req , res , next) => {
+proceedLogin.get('/api/login', async (req , res , next) => {
     try{
         await login(req, res);
     }
     catch (err){
-        return next(err);
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 })
 

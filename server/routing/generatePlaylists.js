@@ -14,7 +14,7 @@ playlistGenerator.get("/api/generatePlaylist" , async (req , res, next) =>  {
         await playlistManager.proceed(req, res);
     }
     catch (err){
-        return next(err);
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 })
 

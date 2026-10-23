@@ -2,8 +2,10 @@
 
 .top-menu{
     width: 100vw;
-    position: fixed;
+    position: sticky;
     top: 0;
+    left: 0;
+    z-index: 1000;
 }
 .top-menu, .buttons-container {
     display: flex;
@@ -25,7 +27,9 @@
 .top-menu-item{
     background: transparent;
 }
-
+.top-menu-item a:hover{
+    color: #1db954;
+}
 .top-menu-item a {
     display: block;
     padding: 10px 15px;

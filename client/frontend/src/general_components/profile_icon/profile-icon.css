@@ -26,3 +26,6 @@
     height: 5vh;
     width: 5vh;
 }
+.logged-out a:hover{
+    color: #1db954;
+}

@@ -107,10 +107,10 @@ passwordActions.post('/api/password-reset/code' , async (req, res, next) => {
             await tries.reset(resetSecret);
             return next(createError("reset token tries amount exceeded the limit", 429));
         }
-        return next(createError(`reset token invalid left tries: ${5 - tries}`));
+        return res.status(400).json({redirectError: true, error: {status: 400 , message: `invalid token left tries: ${5 - tries}`}});
     }
 
-    return res.redirect('/password-reset/form');
+    return res.status(200).json({redirect: true, location:"/api/password-rest/form"})
 })
 
 
@@ -159,7 +159,7 @@ passwordActions.post('/api/password-reset/form' , async(req , res, next) => {
 
     }
 
-    return res.redirect("/password-reset/completed");
+    return res.status(200).json({redirect: true, location:"/password-reset/completed"});
 });
 
 passwordActions.post('/api/password-change' , async (req, res, next) => {
@@ -168,14 +168,14 @@ passwordActions.post('/api/password-change' , async (req, res, next) => {
         res.status(200).json({message: "password changed succesfully"});
     }
     catch(err){
-        return next(createError(err.message, err.status));
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 });
 
-passwordActions.post('/password-reset/completed', async(req, res,  next) => {
+passwordActions.get('/password-reset/completed', async(req, res,  next) => {
     if(!req.cookies.resetSecret) return next(createError("unauthorized access" , 401)); // dodatkowe sprawdznie , moze i nawet nie potrzebne ale kogo to obchodzi
     res.clearCookie('resetSecret');
-    res.sendFile(path.join(clientPath, "passwordReset/completed.html")); // przeniesienie na htmla ktory po okreslonym czasie wysyla na /login
+    return res.status(200).json({redirect: true, location:"/api/password-reset/completed"});
 })
 
 export default passwordActions;

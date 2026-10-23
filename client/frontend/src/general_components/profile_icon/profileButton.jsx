@@ -1,23 +1,29 @@
 import "./profile-icon.css";
-import "../../../styles/general.css"
+import "../../../styles/general.css";
 
 import {useState} from "react";
 
 export const ProfileButton = ({username, src, isLoading, loggedIn}) => {
     return(
         <>
-            <div className={"user-icon-container"} hidden={isLoading || !loggedIn}>
+            {!isLoading && loggedIn &&
+                <div className={"user-icon-container"}>
                 <h3>{username}</h3>
                 <img src={src} alt={"user-icon"} className={"user-icon-img"}/>
             </div>
+            }
 
-            <div className={"logged-out"} hidden={isLoading || loggedIn}>
-                <h3><a href={"./login.html"}></a></h3>
+            {!isLoading && !loggedIn &&
+                <div className={"logged-out"}>
+                <h3><a href={"./login.html"}>LOGIN/REGISTER</a></h3>
             </div>
+            }
 
-            <div className={"smaller-loading"} hidden={!isLoading}>
+            {isLoading &&
+                <div className={"smaller-loading"}>
                 <p>loading...</p>
             </div>
+            }
         </>
     )
 }

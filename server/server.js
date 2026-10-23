@@ -30,6 +30,8 @@ const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/frontend/htmls");
 
+
+
 const sessionStore = connectPgSimple(session);
 const pgPool = new pg.Pool({
         database: process.env.DB_NAME,
@@ -97,6 +99,7 @@ app.use((err , req ,res , next) => {
 
 })
 
-app.listen(process.env.PORT , () => {
-    console.log(`server started on port ${process.env.PORT}`);
-})
+
+app.listen(process.env.PORT, '127.0.0.1', () => {
+    console.log(`Server started on http://127.0.0.1:${process.env.PORT}`);
+});

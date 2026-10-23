@@ -6,7 +6,7 @@ import {clientPath} from "../server.js";
 const dashboardHandler =  express.Router();
 
 dashboardHandler.get("/dashboard" , (req , res) => {
-    res.sendFile(path.join(clientPath, "dashboard.html"));
+    return res.status(200).json({redirect: true, location:"/dashboard.html"});
 });
 
 dashboardHandler.post("/api/dashboard" , async (req , res) => {

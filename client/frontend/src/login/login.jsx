@@ -2,7 +2,6 @@ import {useState ,useEffect} from "react";
 import "./login-page.css";
 import "../../styles/general.css";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
-import {spotifyFetchSchema} from "../../../../server/utlils/spotifyFetchSchema.js";
 import {useRedirectLoggedInUser} from "../../custom_hooks/sessionData.js";
 
 export const LoginPage = () => {
@@ -54,17 +53,21 @@ export const LoginPage = () => {
 
     return(
         <>
-            <p hidden={isLoading} className={"loading"}>LOADING...</p>
-            <section className={"form-section"} hidden={!isLoading}>
-                <h1>Log in</h1>
-                <label> email  <input type={"text"} className={"basic-input"} id={"email-input"} placeholder={"username..."}/>  </label>
-                <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
+            <TopMenu username={""} profileImgSrc={"none"} loggedIn={false} isLoading={isLoading}/>
+            <main>
+                <p hidden={!isLoading} className={"loading"}>LOADING...</p>
+                <section className={"form-section"} hidden={!isLoading}>
+                    <h1>Log in</h1>
+                    <label> email  <input type={"text"} className={"basic-input"} id={"email-input"} placeholder={"username..."}/>  </label>
+                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
 
-                <div className={"send-fetch-container"}>
-                    <button onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
-                    <p hidden={!errorMessage}>{errorMessage}</p>
-                </div>
-            </section>
+                    <div className={"send-fetch-container"}>
+                        <button  onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
+                        <p hidden={!errorMessage}>{errorMessage}</p>
+                    </div>
+                </section>
+            </main>
+
         </>
     )
 

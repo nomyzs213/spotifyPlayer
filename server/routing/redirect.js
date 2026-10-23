@@ -5,5 +5,5 @@ import {clientPath} from "../server.js";
 const redirect = express.Router();
 
 redirect.get("/api/redirect" ,(req , res)=> {
-    res.status(200).sendFile(path.join(clientPath, `dashboard.html`));
+    res.status(200).sendFile(path.join(clientPath, `index.html`));
 })

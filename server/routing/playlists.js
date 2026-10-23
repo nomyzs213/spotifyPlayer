@@ -9,7 +9,7 @@ loadPlaylists.get('/api/getPlaylists' , async (req, res, next) => {
         playlists = await playlistManager.getUserPlaylists(req, res);
     }
     catch (err){
-        return next(err);
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 
     res.status(200).json({
@@ -23,7 +23,7 @@ loadPlaylists.get('/api/generatePlaylists' , async (req, res , next) => {
         await playlistManager.proceed(req, res);
     }
     catch (err){
-        return next(err);
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 });
 

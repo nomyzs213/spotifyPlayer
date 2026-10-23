@@ -4,11 +4,10 @@ import "../../styles/general.css"
 import {useGetUserData} from "../../custom_hooks/sessionData.js";
 function App() {
 
-    const [isLoading, userData] = useGetUserData();
 
   return (
       <>
-        <TopMenu username={"USERNAME"} profileImgSrc={"https://youtube.com"} isLoading={isLoading} loggedIn={userData !== null} />
+        <TopMenu username={"USERNAME"} profileImgSrc={"none"} isLoading={false} loggedIn={false} />
         <main>
           <h2 className={"main-text"} id={"tilt1"}>SEE YOUR LISTENING STATS</h2>
           <h2 className={"main-text"} id={"tilt2"}>GENERATE PLAYLISTS</h2>

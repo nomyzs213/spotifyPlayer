@@ -14,15 +14,15 @@
 h1{
     font-size: 5vh;
 }
-.register-btn , .login-btn{
+.register-btn, .login-btn {
     border-radius: 33rem;
     background-color: #4AAE17;
     font-size: 1.5rem;
     border: none;
-    width: clamp(4vw , 6vw, 10vw);
-    margin-top: auto;
+    width: 150px;
+    padding: 12px 24px;
+    margin-top: 1rem;
     margin-bottom: 3vh;
-    padding: 10%;
 }
 
 .register-btn:hover , .login-btn:hover{

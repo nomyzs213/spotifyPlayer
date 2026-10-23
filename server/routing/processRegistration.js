@@ -13,7 +13,7 @@ proceedRegistration.get("api/register" , async (req, res, next) => {
         await register(req, res);
     }
     catch (err){
-        return next(err);
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 });
 
