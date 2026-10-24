@@ -1,5 +1,5 @@
 import {GoogleGenAI} from "@google/genai";
-import {throwError} from "./errorManager";
+import {throwError} from "./errorManager.js";
 
 
 class GeminiAI{

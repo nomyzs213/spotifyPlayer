@@ -4,7 +4,7 @@ import refreshing from "../refreshCodes.js";
 import areCodesExpired from "../../utlils/areCodesExpired.js";
 
 class dashboard{
-    async #getUserProfile( accessToken){
+    async getUserProfile( accessToken){
         const url = "https://api.spotify.com/v1/me";
         if(!accessToken) throwError("unauthorized access", 401);
 
@@ -18,7 +18,7 @@ class dashboard{
         if(!response.ok) throwError(response.statusText, response.status);
 
         const data = await response.json();
-
+        if(!data.account_id) throwError(data.message, data.status);
         const {account_id, display_name, images} = data;
 
         return [account_id, display_name, images];
@@ -69,8 +69,9 @@ class dashboard{
             compressedArtists.push(
                 {
                     name: artists[i].name,
-                    image: artists[i].images?.at(-1)?.url,
-                    uri: artists[i].uri
+                    image: artists[i].images[-1]?.url,
+                    spotifyLink: artists[i].external_urls.spotify,
+                    position: i + 1
                 }
             )
         }
@@ -80,8 +81,10 @@ class dashboard{
                 {
                     name: tracks[i].name,
                     isLocal: tracks[i].is_local,
-                    album: tracks[i].album,
+                    image: tracks[i].album.images[-1].url,
                     artists: tracks[i].artists,
+                    spotifyLink: tracks[i].href,
+                    position: i + 1
                  }
             )
         }
@@ -95,15 +98,25 @@ class dashboard{
 
         await refreshing.refreshTokens(req,res , await areCodesExpired(req.session.user.id));
 
-        const userProfile = await this.#getUserProfile(accessToken);
+        const userProfile = await this.getUserProfile(accessToken);
         const artists = await this.#getTopItems(accessToken, "artists");
         const tracks = await this.#getTopItems(accessToken, "tracks");
-        const [compressedArtists , compressedTracks] = this.#getCompressedTopItems(req , artists, tracks);
+        const [compressedShortTermArtists , compressedShortTermTracks] = this.#getCompressedTopItems(req , artists.shortTerm, tracks.shortTerm);
+        const [compressedMediumTermArtists, compressedMediumTermTracks] = this.#getCompressedTopItems(req, artists.mediumTerm, tracks.mediumTerm);
+        const [compressedLongTermArtists, compressedLongTermTracks] = this.#getCompressedTopItems(req, artists.longTerm, tracks.longTerm);
 
         return {
             compressedTopItems: {
-                artists: compressedArtists,
-                tracks: compressedTracks
+                artists: {
+                    shortTerm: compressedShortTermArtists,
+                    mediumTerm: compressedMediumTermArtists,
+                    longTerm: compressedLongTermArtists,
+                },
+                tracks: {
+                    shortTerm: compressedShortTermTracks,
+                    mediumTerm: compressedMediumTermTracks,
+                    longTerm: compressedLongTermTracks,
+                }
             },
             userProfile: userProfile
         }

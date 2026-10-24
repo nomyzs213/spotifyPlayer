@@ -1,10 +1,11 @@
-import {sequelize} from "../config/database";
+import {sequelize} from "../config/database.js";
 import {DataTypes} from "sequelize";
 
 export const fetched_songs = sequelize.define("fetchedSong", {
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
         validate: {
             allowNull: false
         }
@@ -26,6 +27,6 @@ export const fetched_songs = sequelize.define("fetchedSong", {
         }
     },
     tags: {
-        type: DataTypes.ARRAY(),
+        type: DataTypes.ARRAY(DataTypes.STRING),
     }
 });

@@ -28,7 +28,9 @@ import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
 const app = express();
 
-export const clientPath = path.resolve(__dirname, "../client/views");
+export const clientPath = path.resolve(__dirname, "../client/frontend/htmls");
+
+
 
 const sessionStore = connectPgSimple(session);
 const pgPool = new pg.Pool({
@@ -84,31 +86,20 @@ app.use((err , req ,res , next) => {
 
     const errorStatus = err.status || 500;
 
-    if(errorStatus === 401){
-        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/401.html"));
+    if (req.originalUrl.startsWith('/api/')) {
+        return res.status(errorStatus).json({
+            error: true,
+            status: errorStatus,
+            message: err.message || "Wystąpił błąd serwera"
+        });
     }
 
-    if(errorStatus === 403){
-        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/403.html"));
-    }
 
-    if(errorStatus === 404){
-        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/404.html"));
-    }
-
-    if(errorStatus === 409){
-        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/409.html"));
-    }
-
-    if(errorStatus === 500){
-        return res.status(errorStatus).sendFile(path.join(clientPath, "errors/500.html"));
-    }
-
-    return res.status(500).sendFile(path.join(clientPath, "errors/500.html"));
-
+    res.status(errorStatus).sendFile(path.join(clientPath, `errors/${errorStatus}.html`));
 
 })
 
-app.listen(process.env.PORT , () => {
-    console.log(`server started on port ${process.env.PORT}`);
-})
+
+app.listen(process.env.PORT, '127.0.0.1', () => {
+    console.log(`Server started on http://127.0.0.1:${process.env.PORT}`);
+});

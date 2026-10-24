@@ -1,10 +1,10 @@
-import {throwError} from "../../utlils/errorManager";
-import {spotifyFetchSchema} from "../../utlils/spotifyFetchSchema";
-import {sessionActions} from "../../utlils/session_actions";
-import areCodesExpired from "../../utlils/areCodesExpired";
+import {throwError} from "../../utlils/errorManager.js";
+import {spotifyFetchSchema} from "../../utlils/spotifyFetchSchema.js";
+import {sessionActions} from "../../utlils/session_actions.js";
+import areCodesExpired from "../../utlils/areCodesExpired.js";
 import refreshing from "../refreshCodes.js";
-import {fetched_songs} from "../../models/fetched_songs";
-import gemini from "../../utlils/geminiAI";
+import {fetched_songs} from "../../models/fetched_songs.js";
+import gemini from "../../utlils/geminiAI.js";
 
     class playlistsManager{
         constructor() {
@@ -69,6 +69,7 @@ import gemini from "../../utlils/geminiAI";
             if(!response.ok) throwError(response.statusText, response.status);
 
             const data = await response.json();
+            if(!data.items) throwError(data.message, data.status);
             const playlists = data.items;
             const compressedPlaylists = [];
 
@@ -107,6 +108,7 @@ import gemini from "../../utlils/geminiAI";
             if (!response.ok) throwError(response.statusText, response.status);
 
             const data = await response.json();
+            if(!data.next) throwError(data.message, data.status);
             let next = data.next;
             allItems.push(data.items);
 
@@ -121,6 +123,8 @@ import gemini from "../../utlils/geminiAI";
                 });
                 if(!response.ok) throwError(response.statusText, response.status);
                 const data = await response.json();
+                if(!data.items) throwError(data.message, data.status);
+
                 allItems.push(...data.items);
                 next = data.next;
             }
@@ -163,6 +167,7 @@ import gemini from "../../utlils/geminiAI";
                     if(!response.ok) throwError("problem with last.fm" , 500);
 
                     const data = await response.json();
+                    if(!data.toptags) throwError(data.message, data.status);
                     const rawTags = data.track.toptags.tag || [];
                     // z last fm moze byc pusta tablica wiec dla niszowych piosenek szukamy prze ai
 
@@ -215,7 +220,7 @@ import gemini from "../../utlils/geminiAI";
 
             if(!response.ok) throwError(response.statusText, response.status);
             const data = await response.json();
-
+            if(!data.id) throwError(data.message, data.status);
             return data.id;
         }
 

@@ -9,7 +9,7 @@ import {sequelize} from "../config/database.js";
 
 import {throwError, createError} from "../utlils/errorManager.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
-import {sessionActions} from "../utlils/session_actions";
+import {sessionActions} from "../utlils/session_actions.js";
 
 binding.use(cookieParser());
 binding.get('/api/binding' , async (req , res , next) => {
@@ -23,12 +23,12 @@ binding.get('/api/binding' , async (req , res , next) => {
 
     if(status === "canceled"){
         clearCookies(res , "pending_registration" , "state");
-        return next(createError("binding cancelled" , 400));
+        return res.status(400).json({redirectError: true, error: {status: 400 , message: "registration canceled"}});
     }
 
     if(error) {
          clearCookies(res , "pending_registration" , "state");
-         return next(createError("problem with spotify api" , 502));
+         return res.status(400).json({redirectError: true, error: {status: 502 , message: "problem with Spotify api"}});
     }
 
     if(alreadyRegistered === 'true'){
@@ -36,7 +36,7 @@ binding.get('/api/binding' , async (req , res , next) => {
             await bindExistingAccount(req, res);
         }
         catch(err){
-            return next(err);
+            return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
         }
     }
     else{
@@ -44,7 +44,7 @@ binding.get('/api/binding' , async (req , res , next) => {
             await bindNewAccount(req , res);
         }
         catch(err){
-            return next(err);
+            return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
         }
     }
 

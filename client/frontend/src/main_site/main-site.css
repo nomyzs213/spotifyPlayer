@@ -1,0 +1,34 @@
+
+.main-text {
+    letter-spacing: clamp(1rem, 1.75rem, 2.2rem);
+    margin-top: 3.5%;
+    font-size: clamp(0.6rem, 2.2rem, 5rem);
+    margin-bottom: 1vh;
+}
+#tilt1{
+    transform: rotate(9deg);
+}
+#tilt2{
+    transform: rotate(-5deg);
+}
+#tilt3{
+    transform: rotate(3deg);
+}
+
+
+main{
+    margin-top: 6vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4rem;
+}
+
+.redirect-container{
+    margin-top: -35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
