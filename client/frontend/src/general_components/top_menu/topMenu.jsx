@@ -7,10 +7,10 @@ export const TopMenu = ({username, profileImgSrc, isLoading, loggedIn}) => {
         <>
         <ul className={"top-menu"} >
             <div className={"buttons-container"} >
-                    <li className="top-menu-item"><a href="/">HOME</a></li>
-                    <li className="top-menu-item"><a href="/stats">LISTENING STATS</a></li>
-                    <li className="top-menu-item"><a href="/playlists">PLAYLIST GENERATION</a></li>
-                    <li className="top-menu-item"><a href="/playback">PLAYBACK</a></li>
+                    <li className="top-menu-item"><a href="/htmls/index.html">HOME</a></li>
+                    <li className="top-menu-item"><a href="/htmls/dashboard.html">LISTENING STATS</a></li>
+                    <li className="top-menu-item"><a href="/htmls/playlists.html">PLAYLIST GENERATION</a></li>
+                    <li className="top-menu-item"><a href="/htmls/playback.html">PLAYBACK</a></li>
             </div>
             <ProfileButton  username={username} src={profileImgSrc} isLoading={isLoading} loggedIn={loggedIn}/>
         </ul>

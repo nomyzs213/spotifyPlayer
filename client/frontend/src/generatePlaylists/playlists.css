@@ -1,0 +1,67 @@
+main{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+.playlist-box{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    width: 50vw;
+    gap: 2vw;
+    margin-top: 2vh;;
+}
+.playlist{
+    display: flex;
+    flex-direction: column;
+    max-width: 250px;
+    max-height: 250px;
+    align-items: center;
+    justify-content: center;
+
+}
+.playlist:hover .img-box {
+    border-color: #1db954; /* zielony kolor w stylu Spotify */
+}
+.img-box {
+    transition: border-color 0.3s ease;
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+    flex-shrink: 0;
+    padding: 0.5rem;
+    border: 2px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.img-box img{
+    height: 138px;
+    width: 138px;
+}
+
+.creation-menu{
+    background-color: black;
+    padding: 5vw;
+    border-radius: 6%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5vh;
+}
+.creation-menu input, .creation-menu select{
+   margin-left: 3vw;
+    color: black;
+}
+.action-btn{
+    background-color: #4AAE17;
+    font-size: 1.5rem;
+    border-radius: 33rem;
+    border: none;
+    padding: 1vw;
+
+}

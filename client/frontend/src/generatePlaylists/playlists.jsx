@@ -1,12 +1,12 @@
 import {useGetDataOrRedirect, useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
-export const playlists = () => {
+export const Playlists = () => {
     const [isLoading, userData] = useGetDataOrRedirect();
 
     return(
         <>
-            <TopMenu username={userData.username} profileImgSrc={userData.imageUrl} isLoading={isLoading} loggedIn={!!userData}/>
+            <TopMenu username={" "} profileImgSrc={" "} isLoading={" "} loggedIn={" "}/>
             <main>
 
 

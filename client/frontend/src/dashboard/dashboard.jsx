@@ -32,12 +32,12 @@ const ListeningPeriod = ({periodName , artists , songs}) => {
                 <div className={"content-container"}>
                     <section className={"top-artists stats-container"}>
                         <h2>ARTISTS</h2>
-                        {artists.map(obj => <Artist artist={obj}/>)}
+                        {artists.map(obj => <Artist artist={obj} key={obj.id}/>)}
                     </section>
 
                     <section className={"top-songs stats-container"}>
                         <h2>SONGS</h2>
-                        {songs.map(obj => <Song song={obj}/>)}
+                        {songs.map(obj => <Song song={obj} key={obj.id}/>)}
                     </section>
                 </div>
 
