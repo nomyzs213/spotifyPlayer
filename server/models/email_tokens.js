@@ -1,5 +1,6 @@
+import pkg from "sequelize";
+const { DataTypes } = pkg;
 import {sequelize} from "../config/database.js";
-import {DataTypes} from "sequelize";
 
 export const email_token = sequelize.define("Email_token", {
     user_id: {

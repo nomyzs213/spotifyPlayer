@@ -1,4 +1,5 @@
-import {DataTypes} from "sequelize";
+import pkg from "sequelize";
+const { DataTypes } = pkg;
 import {sequelize} from "../config/database.js";
 
 export const user_token = sequelize.define("Token" , {

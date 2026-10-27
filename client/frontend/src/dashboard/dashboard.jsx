@@ -51,11 +51,14 @@ const Artist = ({artist}) => {
     return (
         <>
             <div className={"artist-box"}>
-                <section className={"artist"}>
-                    <h3>{`${artist.position}.`} {artist.name}</h3>
+                <div className={"artist"}>
+                    <section>
+                        <h3>{`${artist.position}.`} {artist.name}</h3>
+                        <a href={artist.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                    </section>
                     <img src={artist.image} alt={"artist profile img"}/>
-                </section>
-                <a href={artist.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                </div>
+
             </div>
         </>
     )
@@ -67,11 +70,14 @@ const Song = ({song}) => {
     return (
         <>
             <div className={"song-box"}>
-                <section className={"song"}>
-                    <h3 className={"track-title"}>{`${song.position}.`}{song.name} - {artists}</h3>
+                <div className={"song"}>
+                    <section>
+                        <h3 className={"track-title"}>{`${song.position}.`}{song.name} - {artists}</h3>
+                        <a href={song.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                    </section>
                     <div className={"img-box"}> <img src={song.image} alt={"song image"}/> </div>
-                </section>
-                <a href={song.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                </div>
+
             </div>
 
 

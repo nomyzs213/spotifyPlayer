@@ -6,13 +6,11 @@ const userData = express.Router();
 
 userData.get("/api/getUserData", (req, res, next) => {
     try {
-        // Jeśli jest sesja i jest w niej użytkownik, zwróć go
+
         if (req.session && req.session.user) {
             return res.status(200).json({ user: req.session.user });
         }
 
-        // KLUCZOWE: Jeśli nie ma użytkownika, MUSIMY odesłać pusty obiekt,
-        // żeby zakończyć zapytanie! Wcześniej tego brakowało.
         return res.status(200).json({});
     } catch (err) {
         const status = err.status || 500;

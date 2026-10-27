@@ -9,7 +9,7 @@ export const LoginPage = () => {
     const [errorMessage, setMessage] = useState(null);
     const [isLoading] = useRedirectLoggedInUser();
 
-    const throwOrLogin = async () => {
+    const throwOrProceed = async () => {
         const email = document.getElementById("email-input").value.replaceAll(" ");
         const password = document.getElementById("password-input").value.replaceAll(" ");
         if(!email || !password) {

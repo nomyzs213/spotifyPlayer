@@ -19,9 +19,9 @@ class dashboard{
 
         const data = await response.json();
         if(!data.account_id) throwError(data.message, data.status);
-        const {account_id, display_name, images} = data;
-
-        return [account_id, display_name, images];
+        const {display_name, images} = data;
+        const imageUrl = images[-1];
+        return [display_name, imageUrl];
     }
 
     async #getTopItems(accessToken , type){

@@ -24,37 +24,61 @@ export function useRedirectLoggedInUser(){
 
         }
 
-        load();
+        void load();
 
     }, []);
     return [isLoading];
 }
 
-export function useGetDataOrRedirect(){
+export function useRedirectLoggedOutUser(){
+    const [isLoading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const load = async () => {
+            const response = await fetch("/api/getUserData" , {
+                credentials: "include",
+                method:  "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await response.json();
+
+            const path = "index";
+
+            if(!data.user){
+                window.location.href = `/api/redirect?${path}`;
+            }
+
+            setLoading(false);
+        }
+    }, []);
+
+    return [isLoading];
+}
+export function useGetDataOrRedirect(url){
     const [isLoading , setLoading] = useState(true);
     const [userData , setUserData] = useState(null);
 
     useEffect( ()=>{
         const load = async () => {
-            const response = await fetch("/api/getUserData", {
+            const response = await fetch("/api/getProfileData", {
                 credentials: "include",
                 method: "POST",
                 headers:{"Content-Type": "application/json"},
             });
 
             const data = await response.json();
-            if(!data.user) {
-                window.location.href = "/api/redirect/";
+            if(!data) {
+                window.location.href = `/api/redirect`;
+                return;
             }
-            else {
                 setLoading(false);
-                setUserData(data.user);
-            }
-
-
+                setUserData(data);
         }
 
-        load();
+        void load();
 
     }, []);
     return [isLoading, userData];
@@ -78,10 +102,11 @@ export function useGetUserData(){
             setIsLoading(false);
         }
 
-        load();
+        void load();
 
     }, [])
 
     return [isLoading, userData];
 }
+
 

@@ -1,6 +1,6 @@
+import pkg from "sequelize";
+const { DataTypes } = pkg;
 import {sequelize} from "../config/database.js";
-import {DataTypes} from "sequelize";
-
 export const fetched_songs = sequelize.define("fetchedSong", {
     id: {
         type: DataTypes.UUID,

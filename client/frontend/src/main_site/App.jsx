@@ -1,7 +1,7 @@
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "./main-site.css";
 import "../../styles/general.css"
-import {useGetUserData} from "../../custom_hooks/sessionData.js";
+
 function App() {
 
 
