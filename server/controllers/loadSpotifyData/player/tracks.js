@@ -1,7 +1,7 @@
-import {throwError} from "../../../utlils/errorManager";
-import refreshing from "../../refreshCodes";
-import areCodesExpired from "../../../utlils/areCodesExpired";
-import {spotifyFetchSchema} from "../../../utlils/spotifyFetchSchema";
+import {throwError} from "../../../utlils/errorManager.js";
+import refreshing from "../../refreshCodes.js";
+import areCodesExpired from "../../../utlils/areCodesExpired.js";
+import {spotifyFetchSchema} from "../../../utlils/spotifyFetchSchema.js";
 
 class Tracks{
     async getUsersQueue(req , res){

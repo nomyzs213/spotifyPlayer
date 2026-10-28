@@ -13,7 +13,7 @@ import { startDb } from "./config/database.js";
 
 // wszystkie routery
 import binding from "./routing/accountBinding.js";
-import proceedLogout from "./controllers/logout.js";
+import logout from "./routing/processLogout.js";
 import dashboardHandler from "./routing/dashboard.js";
 import passwordActions from "./routing/passwordActions.js";
 import loadPlaylists from "./routing/playlists.js";
@@ -25,6 +25,7 @@ import session from "express-session";
 import {isHttps} from "./config/cookieInfo.js";
 import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
+import getUserData from "./routing/getUserData.js";
 const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/frontend/htmls");
@@ -68,13 +69,14 @@ await startDb();
 // wszystkie routery
 
 app.use(binding);
-app.use(proceedLogout);
+app.use(logout);
 app.use(dashboardHandler);
 app.use(passwordActions);
 app.use(loadPlaylists);
 app.use(proceedLogin);
 app.use(proceedRegistration);
 app.use(playlistGenerator);
+app.use(getUserData);
 
 app.all(/(.*)/, (req, res) => {
     res.sendFile(path.join(clientPath, "errors/404.html"));

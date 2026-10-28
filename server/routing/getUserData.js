@@ -1,7 +1,7 @@
 import express from "express";
-import {spotifyFetchSchema} from "../utlils/spotifyFetchSchema";
-import {createError} from "../utlils/errorManager";
-import DashboardLoader from "../controllers/loadSpotifyData/dashBoardInfo";
+import {spotifyFetchSchema} from "../utlils/spotifyFetchSchema.js";
+import {createError} from "../utlils/errorManager.js";
+import DashboardLoader from "../controllers/loadSpotifyData/dashBoardInfo.js";
 const userData = express.Router();
 
 userData.get("/api/getUserData", (req, res, next) => {
@@ -24,7 +24,7 @@ userData.get("/api/getUserData", (req, res, next) => {
 userData.post("/api/getProfileData" ,async (req, res, next) => {
     let userProfile;
     try{
-         userProfile = await DashboardLoader.getUserProfile(req, res);
+         userProfile = await DashboardLoader.getUserProfile();
     }
     catch (err){
         return res.status(err.status).json({redirectError: true, error: {status: err.status, message: err.message}});

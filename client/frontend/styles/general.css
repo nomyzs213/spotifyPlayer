@@ -54,3 +54,7 @@ label{
 .loading{
     font-size: clamp(3rem , 4rem , 5rem);
 }
+
+.auth-redirect{
+    text-decoration: underline white;
+}

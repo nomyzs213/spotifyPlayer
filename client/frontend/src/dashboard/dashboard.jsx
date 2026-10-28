@@ -12,7 +12,7 @@ export const Dashboard = () => {
     // const [isLoading ,userData] = useGetDataOrRedirect();
     return (
         <>
-            <TopMenu username={"username"} profileImgSrc={defaultImage} isLoading={false}  loggedIn={true}/>
+            <TopMenu/>
             <main>
                 <ListeningPeriod periodName={"LAST MONTH"} artists={artists.shortTerm} songs={tracks.shortTerm}/>
                 <ListeningPeriod periodName={"LAST 6 MONTHS"} artists={artists.mediumTerm} songs={tracks.mediumTerm}/>

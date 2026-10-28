@@ -54,7 +54,7 @@ export const Register = () => {
     }
     return (
         <>
-            <TopMenu username={" "} profileImgSrc={" "} loggedIn={false} isLoading={isLoading}/>
+            <TopMenu/>
             <main>
                 <p hidden={!isLoading} className={"loading"}>LOADING...</p>
                 <section className={"form-section"} hidden={!isLoading}>
@@ -63,9 +63,10 @@ export const Register = () => {
                     <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
                     <label> confirm password<input type={"password"} placeholder={"confirm password..."}/>  </label>
                     <div className={"send-fetch-container"}>
-                        <button  onClick={} className={"login-btn"} > log in</button>
+                        <button className={"login-btn"} > log in</button>
                         <p hidden={!errorMessage}>{errorMessage}</p>
                     </div>
+                    <a href={"/htmls/login.html"} className={"auth-redirect"}>already registered? </a>
                 </section>
             </main>
         </>

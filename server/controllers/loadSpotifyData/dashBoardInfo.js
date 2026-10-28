@@ -6,8 +6,7 @@ import areCodesExpired from "../../utlils/areCodesExpired.js";
 class dashboard{
     async getUserProfile( accessToken){
         const url = "https://api.spotify.com/v1/me";
-        if(!accessToken) throwError("unauthorized access", 401);
-
+        if(!accessToken) return [];
         const response = await fetch(url, {
             method: "GET",
             headers: {

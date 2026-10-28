@@ -4,7 +4,7 @@ import "../../styles/general.css";
 export const Playback = () => {
     return (
         <>
-            <TopMenu username={" "} profileImgSrc={" "} isLoading={false} loggedIn={false}/>
+            <TopMenu/>
 
         </>
     )

@@ -8,3 +8,5 @@ redirect.get("/api/redirect" ,(req , res)=> {
     const path = req.params.path;
     res.status(200).sendFile(path.join(clientPath, `${path ? path : "index"}.html`));
 })
+
+export default redirect;

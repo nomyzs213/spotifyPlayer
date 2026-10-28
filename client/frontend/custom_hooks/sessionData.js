@@ -15,6 +15,7 @@ export function useRedirectLoggedInUser(){
             const data = await response.json();
             if(data.user) {
                 window.location.href = "/api/redirect";
+                return;
             }
             if(data.redirectError) {
                 window.location.href = `/htmls/errors/${data.error.status}.html`;
@@ -88,21 +89,29 @@ export function useGetUserData(){
     const [isLoading, setIsLoading] = useState(true);
     const [userData, setUserData] = useState(null);
     useEffect( ()=>{
-        const load = async () => {
-            const response = await fetch("/api/getUserData", {
-                credentials: "include",
-                method: "POST",
-                headers:{"Content-Type": "application/json"},
-            });
+        try{
+            const load = async () => {
+                const response = await fetch("/api/getProfileData", {
+                    credentials: "include",
+                    method: "POST",
+                    headers:{"Content-Type": "application/json"},
+                });
 
-            const data = await response.json();
-            if(data.user) {
-                setUserData(data.user);
+
+                const data = await response.json();
+
+                if(data.user) {
+                    setUserData(data.user);
+                }
+                setIsLoading(false);
             }
-            setIsLoading(false);
+
+            void load();
+        }
+        catch (err){
+            console.error(err);
         }
 
-        void load();
 
     }, [])
 

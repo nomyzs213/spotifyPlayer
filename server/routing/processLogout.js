@@ -14,3 +14,5 @@ logout.post('/api/logout' , async (req, res, next) => {
     }
 });
 
+export default logout;
+

@@ -3,6 +3,8 @@ main{
     align-items: center;
     justify-content: space-evenly;
     flex-direction: row;
+    gap: 3vw;
+    margin-left: 3vw;
 }
 
 .playlist-box{
@@ -44,6 +46,10 @@ main{
 }
 
 .creation-menu{
+    position: sticky;
+    z-index: 1000;
+    top:0;
+    left: 0;
     background-color: black;
     padding: 5vw;
     border-radius: 6%;
@@ -53,7 +59,7 @@ main{
     justify-content: center;
     gap: 5vh;
 }
-.creation-menu input, .creation-menu select{
+.creation-menu input, .creation-menu select , .creation-menu option{
    margin-left: 3vw;
     color: black;
 }

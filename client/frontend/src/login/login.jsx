@@ -9,7 +9,7 @@ export const LoginPage = () => {
     const [errorMessage, setMessage] = useState(null);
     const [isLoading] = useRedirectLoggedInUser();
 
-    const throwOrProceed = async () => {
+    const throwOrLogin = async () => {
         const email = document.getElementById("email-input").value.replaceAll(" ");
         const password = document.getElementById("password-input").value.replaceAll(" ");
         if(!email || !password) {
@@ -65,6 +65,7 @@ export const LoginPage = () => {
                         <button  onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
                         <p hidden={!errorMessage}>{errorMessage}</p>
                     </div>
+                    <a href={"/htmls/register.html"}>not registered yet?</a>
                 </section>
             </main>
 
