@@ -25,7 +25,7 @@ main{
 
 }
 .playlist:hover .img-box {
-    border-color: #1db954; /* zielony kolor w stylu Spotify */
+    border-color: #1db954;
 }
 .img-box {
     transition: border-color 0.3s ease;
@@ -70,6 +70,10 @@ main{
     border: none;
     padding: 1vw;
 }
-.selected-playlist{
-    border: 1px solid green;
+.img-box.selected-playlist {
+    border: 2px solid #1db954;
+}
+
+.select-box{
+    margin: 5vh;
 }

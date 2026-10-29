@@ -75,6 +75,7 @@ import gemini from "../../utlils/geminiAI.js";
 
             playlists.forEach(el => {
                 compressedPlaylists.push({
+                    id: el.items.id,
                     image: el?.images[0],
                     name: el.name,
                     nextReqUrl: el.items.href
@@ -87,11 +88,11 @@ import gemini from "../../utlils/geminiAI.js";
 
         async #getTracksDetails(req, res) {
             if (!req.session.user) throwError("unauthorized access", 401);
-            if (req.body.reqUrl) throwError("something went wrong with choosing playlist", 500);
+            if (req.body.id) throwError("something went wrong with choosing playlist", 500);
 
 
             const allItems = [];
-            const reqUrl = req.body.reqUrl;
+            const reqUrl = req.body.id;
             const accessToken = req.session.user.accessToken;
             const max = "?limit=50";
             const filter = "&fields=items(track(name ,artists(name) , uri) ),next";
@@ -108,7 +109,7 @@ import gemini from "../../utlils/geminiAI.js";
             if (!response.ok) throwError(response.statusText, response.status);
 
             const data = await response.json();
-            if(!data.next) throwError(data.message, data.status);
+            if(data.error) throwError(data.error.status, data.error.message);
             let next = data.next;
             allItems.push(data.items);
 
@@ -123,7 +124,7 @@ import gemini from "../../utlils/geminiAI.js";
                 });
                 if(!response.ok) throwError(response.statusText, response.status);
                 const data = await response.json();
-                if(!data.items) throwError(data.message, data.status);
+                if(!data.items) throwError(data.error.message, data.error.status);
 
                 allItems.push(...data.items);
                 next = data.next;
@@ -167,7 +168,7 @@ import gemini from "../../utlils/geminiAI.js";
                     if(!response.ok) throwError("problem with last.fm" , 500);
 
                     const data = await response.json();
-                    if(!data.toptags) throwError(data.message, data.status);
+                    if(!data.toptags) throwError(data.error.message, data.error.status);
                     const rawTags = data.track.toptags.tag || [];
                     // z last fm moze byc pusta tablica wiec dla niszowych piosenek szukamy prze ai
 
@@ -220,7 +221,7 @@ import gemini from "../../utlils/geminiAI.js";
 
             if(!response.ok) throwError(response.statusText, response.status);
             const data = await response.json();
-            if(!data.id) throwError(data.message, data.status);
+            if(!data.id) throwError(data.error.message, data.error.status);
             return data.id;
         }
 
