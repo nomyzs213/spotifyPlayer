@@ -69,5 +69,7 @@ main{
     border-radius: 33rem;
     border: none;
     padding: 1vw;
-
+}
+.selected-playlist{
+    border: 1px solid green;
 }
