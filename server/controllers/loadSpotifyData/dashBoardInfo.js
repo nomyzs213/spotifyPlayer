@@ -14,7 +14,10 @@ class dashboard{
             }
         });
 
-        if(!response.ok) throwError(response.statusText, response.status);
+        if(!response.ok) {
+            const data = await response.json();
+            throwError(data.error.message, data.error.status);
+        }
 
         const data = await response.json();
         if(!data.account_id) throwError(data.error.message, data.error.status);

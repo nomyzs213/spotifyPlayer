@@ -5,6 +5,8 @@ import areCodesExpired from "../../utlils/areCodesExpired.js";
 import refreshing from "../refreshCodes.js";
 import {fetched_songs} from "../../models/fetched_songs.js";
 import gemini from "../../utlils/geminiAI.js";
+import {setTimeout} from "timers/promises";
+import session from "express-session";
 
     class playlistsManager{
         constructor() {
@@ -61,15 +63,19 @@ import gemini from "../../utlils/geminiAI.js";
                 {
                     method: "GET",
                     headers: {
-                        Authorization: spotifyFetchSchema.basicHeader(accessToken)
+                        "Authorization": spotifyFetchSchema.basicHeader(accessToken),
+                        "Content-Type": spotifyFetchSchema.jsonHeader()
                     }
                 }
             );
 
-            if(!response.ok) throwError(response.statusText, response.status);
+            if(!response.ok) {
+                const data = await response.json();
+                throwError(data.error.message, data.error.status);
+            }
 
             const data = await response.json();
-            if(!data.items) throwError(data.message, data.status);
+            if(!data.items) throwError(data.error.message, data.error.status);
             const playlists = data.items;
             const compressedPlaylists = [];
 
@@ -85,6 +91,7 @@ import gemini from "../../utlils/geminiAI.js";
             sessionActions.createPlaylistsInstance(compressedPlaylists);
             return compressedPlaylists;
         }
+
 
         async #getTracksDetails(req, res) {
             if (!req.session.user) throwError("unauthorized access", 401);
@@ -102,11 +109,15 @@ import gemini from "../../utlils/geminiAI.js";
             const response = await fetch(reqUrl + max + filter, {
                 method: "GET",
                 headers: {
-                    Authorization: spotifyFetchSchema.basicHeader(accessToken)
+                    "Authorization": spotifyFetchSchema.basicHeader(accessToken),
+                    "Content-Type": "application/json"
                 }
             });
 
-            if (!response.ok) throwError(response.statusText, response.status);
+            if(!response.ok) {
+                const data = await response.json();
+                throwError(data.error.message, data.error.status);
+            }
 
             const data = await response.json();
             if(data.error) throwError(data.error.status, data.error.message);
@@ -119,21 +130,102 @@ import gemini from "../../utlils/geminiAI.js";
                 const response = await fetch(next + filter , {
                     method:  "GET",
                     headers: {
-                        authorization: spotifyFetchSchema.basicHeader(accessToken)
+                        "Authorization": spotifyFetchSchema.basicHeader(accessToken),
+                        "Content-Type": spotifyFetchSchema.jsonHeader()
                     }
                 });
-                if(!response.ok) throwError(response.statusText, response.status);
+                if(!response.ok) {
+                    const data = await response.json();
+                    throwError(data.error.message, data.error.status);
+                }
                 const data = await response.json();
                 if(!data.items) throwError(data.error.message, data.error.status);
 
                 allItems.push(...data.items);
                 next = data.next;
+
+                await setTimeout(200);
             }
 
 
             return allItems;
         }
 
+        async #getLikedSongs(req, res){
+            if(!req.body.likedSongs) throwError("unauthorized liked songs get", 401);
+            if (!req.session.user) throwError("unauthorized access - no session", 401);
+            if (req.body.id) throwError("something went wrong with choosing playlist", 500);
+
+
+            const max = "?limit=50";
+            const accessToken = req.session.user.accessToken ;
+            const allSongs = [];
+
+            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+
+            const response = await fetch("https://api.spotify.com/v1/me/tracks"+ max , {
+                method: "GET",
+                headers: {
+                    "Content-Type": spotifyFetchSchema.jsonHeader(),
+                    "Authorization": spotifyFetchSchema.basicHeader(accessToken)
+                }
+            });
+
+            if(!response.ok) {
+                const data = await response.json();
+                throwError(data.error.message, data.error.status);
+            }
+
+            const data = await response.json();
+            let next = data.next;
+            while (next){
+                await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+
+                const response = await fetch(next, {
+                    "method": "GET",
+                    headers: {
+                        'Authorization': spotifyFetchSchema.basicHeader(accessToken),
+                        "Content-Type": spotifyFetchSchema.jsonHeader()
+                    }
+                });
+
+                if(!response.ok){
+                    const data = await response.json();
+                    throwError(data.error.message, data.error.status);
+                }
+
+                const data = await response.json();
+
+                next = data.next;
+                allSongs.push(...data.items);
+                await setTimeout(200);
+
+            }
+            return allSongs;
+        }
+        async hasLikedSongs(req, res){
+            if(!req.session.user) throwError("unauthorized access", 401);
+            const limit = "?limit=1";
+            const accessToken = req.session.user.accessToken;
+
+            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+
+            const response = await fetch("https://api.spotify.com/v1/me/tracks" + limit, {
+                method: "GET",
+                headers: {
+                    "Authorization": spotifyFetchSchema.basicHeader(accessToken),
+                    "Content-Type" : spotifyFetchSchema.jsonHeader()
+                }
+            });
+
+            if(!response.ok){
+                const data = await response.json();
+                throwError(data.error.message, data.error.status);
+            }
+            const data = await response.json();
+            return data.total >0;
+
+        }
         // tu bedzie robione na zewnetrznym api oprocz spotify XD
         // spotify sie wywalilo i do nowych aplikacji juz nie daja statow swoich wiec no idealnie
 
@@ -192,7 +284,7 @@ import gemini from "../../utlils/geminiAI.js";
 
                 }
                 if(this.#matchesMood(req, tagNames)) matchingSongs.push(item.track);
-                setTimeout(() => {} , 200);
+                await setTimeout(200);
                 // max 5 req na sek czytajac z ich docsow
             }
 
@@ -209,7 +301,7 @@ import gemini from "../../utlils/geminiAI.js";
             const response = await fetch("https://api.spotify.com/v1/me/playlists" , {
                 method: "POST",
                 headers: {
-                    Authorization: spotifyFetchSchema.basicHeader(accessToken),
+                    'Authorization': spotifyFetchSchema.basicHeader(accessToken),
                     'Content-Type': spotifyFetchSchema.jsonHeader()
                 },
                 body: JSON.stringify({
@@ -219,7 +311,10 @@ import gemini from "../../utlils/geminiAI.js";
                 })
             });
 
-            if(!response.ok) throwError(response.statusText, response.status);
+            if(!response.ok) {
+                const data = await response.json();
+                throwError(data.error.message, data.error.status);
+            }
             const data = await response.json();
             if(!data.id) throwError(data.error.message, data.error.status);
             return data.id;
@@ -241,7 +336,7 @@ import gemini from "../../utlils/geminiAI.js";
                 const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
                     method: "POST",
                     headers: {
-                        Authorization: spotifyFetchSchema.basicHeader(accessToken),
+                        'Authorization': spotifyFetchSchema.basicHeader(accessToken),
                         'Content-Type' : spotifyFetchSchema.jsonHeader()
                     },
                     body: JSON.stringify({
@@ -250,7 +345,10 @@ import gemini from "../../utlils/geminiAI.js";
                     })
                 });
 
-                if(!response.ok) throwError(response.statusText, response.status);
+                if(!response.ok) {
+                    const data = await response.json();
+                    throwError(data.error.message, data.error.status);
+                }
                 positionNumber+=100;
             }
 
@@ -259,7 +357,9 @@ import gemini from "../../utlils/geminiAI.js";
 
 
         async proceed(req, res){
-            const allSongs = await this.#getTracksDetails(req, res);
+            let allSongs;
+            if(req.body.likedSongs)  allSongs = await this.#getLikedSongs(req,res);
+            else  allSongs = await this.#getTracksDetails(req, res);
             const matchingSongs = await this.#getSongsMoodTags(req, res, allSongs);
 
             if(!matchingSongs) res.status(200).json({

@@ -3,11 +3,13 @@ import "../../styles/general.css";
 import "./playlists.css";
 import {testPlaylists} from "../playback/testData.js";
 import {useState} from "react";
+import {useLikedSongs} from "../../custom_hooks/usePlaylists.js";
 
 export const Playlists = () => {
     const [selected, setSelected] = useState(null);
     const [playlistName, setName] = useState(null);
     const [error, setError] = useState(null);
+    const [isLoading, hasLikedSongs] = useLikedSongs();
 
     const moods = ["energetic" , "chill" , "sad" , "happy"];
 
@@ -23,18 +25,19 @@ export const Playlists = () => {
             setError("problem accused when generating playlist. try again later. ");
         }
     }
+
     return(
         <>
             <TopMenu/>
             <main>
-                <section>
+                <section hidden={!isLoading}>
                     <h2>Select playlist</h2>
                     <div className={"playlist-box"}>
                         {testPlaylists.map(p => <Playlist item={p} key={p.id} id={p.id} selected={selected} onClick={() => {setSelected(p.id); setName(p.title)}} />)}
                     </div>
                 </section>
 
-                <div>
+                <div hidden={!isLoading}>
                     <section className={`creation-menu`}>
                         <label>UNIQUE playlist name<input type={"text"} placeholder={"playlist name..."}/></label>
                         <label>select mood <select>
@@ -46,10 +49,7 @@ export const Playlists = () => {
                     <p className={"select-box"}>SELECTED PLAYLIST: {playlistName ? playlistName.toUpperCase() : "NONE"} </p>
                 </div>
 
-
-
-
-
+                {!isLoading && <h2>LOADING...</h2> }
             </main>
         </>
     )
