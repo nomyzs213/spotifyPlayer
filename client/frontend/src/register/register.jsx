@@ -1,4 +1,5 @@
 import "../../styles/general.css";
+import "../login/login-page.css";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import {useState} from "react";
 import {useRedirectLoggedInUser} from "../../custom_hooks/sessionData.js";
@@ -57,14 +58,14 @@ export const Register = () => {
             <TopMenu/>
             <main>
                 <p hidden={!isLoading} className={"loading"}>LOADING...</p>
-                <section className={"form-section"} hidden={!isLoading}>
+                <section className={"form-section"} hidden={isLoading}>
                     <h1>Register</h1>
                     <label> email  <input type={"text"} className={"basic-input"} id={"email-input"} placeholder={"username..."}/>  </label>
                     <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
-                    <label> confirm password<input type={"password"} placeholder={"confirm password..."}/>  </label>
+                    <label> confirm password<input type={"password"} placeholder={"confirm password..."} className={"basic-input"}/>  </label>
                     <div className={"send-fetch-container"}>
-                        <button className={"login-btn"} > log in</button>
-                        <p hidden={!errorMessage}>{errorMessage}</p>
+                        <button className={"login-btn"} > register </button>
+                        <p hidden={!errorMessage && !isLoading}>{errorMessage}</p>
                     </div>
                     <a href={"/htmls/login.html"} className={"auth-redirect"}>already registered? </a>
                 </section>

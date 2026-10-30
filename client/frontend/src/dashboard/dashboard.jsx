@@ -54,7 +54,7 @@ const Artist = ({artist}) => {
                 <div className={"artist"}>
                     <section>
                         <h3>{`${artist.position}.`} {artist.name}</h3>
-                        <a href={artist.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                        <a href={artist.spotifyLink}  target={"_blank"} className={"spotify-link"}>see on Spotify</a>
                     </section>
                     <img src={artist.image} alt={"artist profile img"}/>
                 </div>
@@ -73,7 +73,7 @@ const Song = ({song}) => {
                 <div className={"song"}>
                     <section>
                         <h3 className={"track-title"}>{`${song.position}.`}{song.name} - {artists}</h3>
-                        <a href={song.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                        <a href={song.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>
                     </section>
                     <div className={"img-box"}> <img src={song.image} alt={"song image"}/> </div>
                 </div>

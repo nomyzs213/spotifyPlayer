@@ -65,7 +65,7 @@ export const LoginPage = () => {
                         <button  onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
                         <p hidden={!errorMessage}>{errorMessage}</p>
                     </div>
-                    <a href={"/htmls/register.html"}>not registered yet?</a>
+                    <a href={"/htmls/register.html"} className={"auth-redirect"}>not registered yet?</a>
                 </section>
             </main>
 

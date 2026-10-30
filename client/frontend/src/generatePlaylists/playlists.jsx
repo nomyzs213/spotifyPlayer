@@ -33,7 +33,12 @@ export const Playlists = () => {
                 <section hidden={!isLoading}>
                     <h2>Select playlist</h2>
                     <div className={"playlist-box"}>
-                        {testPlaylists.map(p => <Playlist item={p} key={p.id} id={p.id} selected={selected} onClick={() => {setSelected(p.id); setName(p.title)}} />)}
+                        {testPlaylists.map(p => <Playlist
+                            item={p}
+                            key={p.id}
+                            id={p.id}
+                            selected={selected}
+                            onClick={() => {setSelected(p.id); setName(p.title)}} />)}
                     </div>
                 </section>
 
@@ -49,7 +54,7 @@ export const Playlists = () => {
                     <p className={"select-box"}>SELECTED PLAYLIST: {playlistName ? playlistName.toUpperCase() : "NONE"} </p>
                 </div>
 
-                {!isLoading && <h2>LOADING...</h2> }
+                {!isLoading  && <h2>LOADING...</h2> }
             </main>
         </>
     )
