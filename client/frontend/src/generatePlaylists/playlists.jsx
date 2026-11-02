@@ -1,7 +1,7 @@
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
 import "./playlists.css";
-import {testPlaylists} from "../playback/testData.js";
+import {testPlaylists} from "./testData.js";
 import {useState} from "react";
 import {useLikedSongs} from "../../custom_hooks/usePlaylists.js";
 

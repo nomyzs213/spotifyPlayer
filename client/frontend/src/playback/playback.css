@@ -1,6 +1,115 @@
+main{
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.song-container{
+    display: flex;
+    height: clamp(60vh, 75vh, 85vh);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: clamp(20vw, 30vw , 35vw);
+    gap: 5vh;
+    overflow-y: auto;
+    background-color: black;
+    border-radius: 3rem;
+    margin-top: 5vh;
+    font-size: 0.8rem;
+    text-wrap: wrap;
+    text-wrap-style: pretty;
+
+}
 .item{
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    gap: 2vw;
+    justify-content: flex-start;
     align-items: center;
+    height: 8vh;
+    width: 100%;
+    scroll-margin-left: 2vh;
+    scrollbar-width: thin;
+    padding: 0.5rem 1rem;
+}
+
+.img-box{
+    flex-shrink: 0;
+ border-radius: 3rem;
+}
+.img-box img{
+    height: 4rem;
+    width: 4rem;
+}
+
+.recently-played{
+    background-color: black;
+    border-radius: 3rem;
+}
+.currently-playing-img-box{
+    position: static !important;
+    top: 0;
+    left: 0;
+
+    border: 1px solid transparent;
+    border-radius: 4rem;
+    width: fit-content;
+    height: fit-content;
+    overflow: hidden;
+}
+.currently-playing-img{
+    height: 20rem;
+    width: 20rem;
+}
+.controls-container{
+    border-radius: 20rem;
+}
+.controls-button{
+    border-radius: 20rem;
+    background-color: transparent;
+    margin: 3vw;
+    border: none;
+}
+
+.controls-button:hover{
+    border: 1px solid rgba(255,  255 , 255 , 0.6);
+    padding: 0.5vh;
+}
+
+.controls , .currently-playing{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.controls{
+    margin-top: 30px;
+}
+
+.progress-slider {
+    height: 4px;
+    appearance: none;
+    width: 20vw;
+    margin: 2px;
+    border-radius: 8px;
+    transition: 0.2s ease;
+    background-color: #5e5e5e;
+}
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: green;
+}
+
+input[type="range"]:hover {
+    background: green;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+    background-color: white;
 }
