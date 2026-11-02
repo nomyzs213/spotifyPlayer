@@ -1,26 +1,60 @@
+
 main{
+    margin-top: 10vh;
     height: 100vh;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-around;
 }
 
-.song-container{
+
+.song-container {
+    padding-top: 3vh;
+    padding-left: 2vw;
     display: flex;
-    height: clamp(60vh, 75vh, 85vh);
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    width: clamp(20vw, 30vw , 35vw);
-    gap: 5vh;
-    overflow-y: auto;
-    background-color: black;
+    width: clamp(20vw, 28vw, 32vw);
+    height: clamp(40vh, 60vh, 70vh);
+    gap: 3.5vh;
+    overflow-y: scroll;
+    font-size: clamp(0.6rem , 07rem , 0.8rem);
+
+    background: rgba(18, 18, 18, 0.7);
     border-radius: 3rem;
-    margin-top: 5vh;
-    font-size: 0.8rem;
-    text-wrap: wrap;
-    text-wrap-style: pretty;
+}
+.song-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.song-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3rem;
+    margin: 1.5vh 0;
+}
+
+.song-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3rem;
+    transition: background 0.3s ease;
+}
+
+.song-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.song-container h2 {
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+.song-container h2{
+    margin-top: 2vh;
+    text-align: center;
 
 }
 .item{
@@ -53,7 +87,6 @@ main{
     position: static !important;
     top: 0;
     left: 0;
-
     border: 1px solid transparent;
     border-radius: 4rem;
     width: fit-content;
@@ -74,10 +107,7 @@ main{
     border: none;
 }
 
-.controls-button:hover{
-    border: 1px solid rgba(255,  255 , 255 , 0.6);
-    padding: 0.5vh;
-}
+
 
 .controls , .currently-playing{
     display: flex;
@@ -91,10 +121,10 @@ main{
 }
 
 .progress-slider {
+    margin-right: 1vw;
     height: 4px;
     appearance: none;
     width: 20vw;
-    margin: 2px;
     border-radius: 8px;
     transition: 0.2s ease;
     background-color: #5e5e5e;
@@ -113,3 +143,20 @@ input[type="range"]:hover {
 input[type="range"]::-webkit-slider-thumb:hover {
     background-color: white;
 }
+
+.controls label{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.controls-button img{
+    width: 4vh;
+    height: 4vh;
+}
+
+.song-container-heading{
+   margin-bottom: 2vh;
+}
+
