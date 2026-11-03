@@ -14,7 +14,7 @@ export function useRedirectLoggedInUser(){
 
             const data = await response.json();
             if(data.user) {
-                window.location.href = "/api/redirect";
+                window.location.href = "/htmls/errors/dashboard.html";
                 return;
             }
             if(data.redirectError) {
@@ -31,7 +31,7 @@ export function useRedirectLoggedInUser(){
     return [isLoading];
 }
 
-export function useRedirectLoggedOutUser(){
+export function useRedirectLoggedOutUser(differentFile){
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -46,18 +46,21 @@ export function useRedirectLoggedOutUser(){
 
             const data = await response.json();
 
-            const path = "index";
-
             if(!data.user){
-                window.location.href = `/api/redirect?${path}`;
+                window.location.href = `/htmls/${differentFile ? differentFile : "index"}.html`;
+                setLoading(false);
+                return;
             }
 
             setLoading(false);
         }
+
+        void load();
     }, []);
 
     return [isLoading];
 }
+
 export function useGetDataOrRedirect(url){
     const [isLoading , setLoading] = useState(true);
     const [userData , setUserData] = useState(null);

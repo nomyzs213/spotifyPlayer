@@ -62,7 +62,7 @@ passwordActions.get("/password-reset/code" , (req, res) => {
 });
 
 passwordActions.get("/password-reset/form" , (req, res) => {
-    res.sendFile(path.join(clientPath, "passwordReset/form.html"));
+    res.sendFile(path.join(clientPath, "passwordReset/passwordConfirmation.html"));
 });
 
 passwordActions.post('/api/password-reset/code' , async (req, res, next) => {

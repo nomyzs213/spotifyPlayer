@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -12,6 +12,10 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'htmls/index.html'),
         login: resolve(__dirname, 'htmls/login.html'),
+        register: resolve(__dirname, 'htmls/register.html'),
+        resetPasswordEmailForm: resolve(__dirname, 'htmls/passwordReset/email.html'),
+        resetPasswordCode: resolve(__dirname, "htmls/passwordReset/code.html"),
+        resetPasswordConfirmation: resolve(__dirname, 'htmls/passwordReset/passwordConfirmation.html'),
         dashboard: resolve(__dirname, 'htmls/dashboard.html'),
         error401: resolve(__dirname, 'htmls/errors/401.html'),
         error403: resolve(__dirname, 'htmls/errors/403.html'),

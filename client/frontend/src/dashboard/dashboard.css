@@ -1,9 +1,12 @@
+
 main {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100vw;
+    overflow: scroll;
+    height: 100vh;
 }
 
 .period-container {
@@ -17,6 +20,7 @@ main {
     border-radius: 3rem;
     padding: 2rem;
     margin-top: 3vh;
+    width: 70%;
 }
 
 .content-container {

@@ -29,3 +29,6 @@
 .logged-out a:hover{
     color: #1db954;
 }
+.logged-out{
+    margin-right: 2.7vw;
+}

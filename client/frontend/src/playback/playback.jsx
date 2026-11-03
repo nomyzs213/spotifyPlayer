@@ -1,23 +1,27 @@
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
 import "./playback.css";
+import "../../styles/scrollbar.css";
+
 import {testCurrentlyPlaying , testQueueItems, testRecentlyPlayed} from "./testData.js";
 import {useRef, useState} from "react";
 import stopPlaying from "./playback_icons/stop.svg";
 import resume from "./playback_icons/resume.svg";
 import skip from "./playback_icons/skip.svg";
 import goBack from "./playback_icons/go_back.svg";
+import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 export const Playback = () => {
-
+    const [isLoading] = useRedirectLoggedOutUser();
     const testSongLength = 3 * 60 * 1000;
     return (
         <>
             <TopMenu/>
-            <main>
+            {isLoading && <h1>LOADING...</h1>}
+            {!isLoading && <main>
                 <SongContainer type={"QUEUE"} items={testQueueItems}/>
                 <CurrentlyPlaying currentlyPlaying={testCurrentlyPlaying} songLength={testSongLength}/>
                 <SongContainer type={"RECENTLY PLAYED"} items={testRecentlyPlayed}/>
-            </main>
+            </main>}
         </>
     )
 }

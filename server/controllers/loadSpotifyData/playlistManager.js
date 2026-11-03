@@ -84,7 +84,7 @@ import session from "express-session";
                     id: el.items.id,
                     image: el?.images[0],
                     name: el.name,
-                    nextReqUrl: el.items.href
+                    songCount: el.items.total
                 })
             });
 

@@ -1,15 +1,18 @@
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
 import "./playlists.css";
+import "../../styles/scrollbar.css";
 import {testPlaylists} from "./testData.js";
 import {useRef, useState} from "react";
 import {useLikedSongs} from "../../custom_hooks/usePlaylists.js";
+import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 
 export const Playlists = () => {
+    const [isLoading] = useRedirectLoggedOutUser();
     const [selected, setSelected] = useState([]);
     const [playlistNames, setNames] = useState([]);
     const [error, setError] = useState(null);
-    const [isLoading, hasLikedSongs] = useLikedSongs();
+    const [isLoading2, hasLikedSongs] = useLikedSongs();
 
     const moods = ["energetic" , "chill" , "sad" , "happy"];
 
@@ -44,8 +47,9 @@ export const Playlists = () => {
     return(
         <>
             <TopMenu/>
-            <main>
-                <section hidden={!isLoading}>
+            {isLoading && <h1>LOADING...</h1>}
+            {!isLoading && <main>
+                <section hidden={!isLoading2}>
                     <h2>Select playlist</h2>
                     <div className={"playlist-box"}>
                         {testPlaylists.map(p => <Playlist
@@ -57,10 +61,10 @@ export const Playlists = () => {
                     </div>
                 </section>
 
-                <div hidden={!isLoading}>
+                <div hidden={!isLoading2}>
                     <section className={`creation-menu`}>
-                        <label>UNIQUE playlist name<input type={"text"} placeholder={"playlist name..."}/></label>
-                        <label>select mood <select>
+                        <label>UNIQUE playlist name<input type={"text"} placeholder={"playlist name..."} autoComplete={"off"} name={"playlist-name"}/></label>
+                        <label>select mood <select name={"select-mood"}>
                             {moods.map(m => <option key={m}>{m}</option>)}
                         </select></label>
                         <button className={"action-btn"}>GENERATE PLAYLIST</button>
@@ -69,8 +73,8 @@ export const Playlists = () => {
                     <div className={"select-box"}>SELECTED PLAYLIST: {playlistNames.length> 0 ? playlistNames.map(n => <p>{n}</p>) : "NONE"} </div>
                 </div>
 
-                {!isLoading  && <h2>LOADING...</h2> }
-            </main>
+                {!isLoading2  && <h2>LOADING...</h2> }
+            </main>}
         </>
     )
 }
@@ -83,6 +87,7 @@ function Playlist({item, id, selected, onClick} ){
             <div className={`img-box ${selected.includes(id) ? 'selected-playlist' : ""}`} id={`${id}`}>
                 <img src={item.src} alt={"playlist img"}/>
             </div>
+            <p>{item.songCount} items</p>
             <h3>{item.title}</h3>
         </section>
     );

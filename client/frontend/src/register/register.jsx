@@ -60,9 +60,9 @@ export const Register = () => {
                 <p hidden={!isLoading} className={"loading"}>LOADING...</p>
                 <section className={"form-section"} hidden={isLoading}>
                     <h1>Register</h1>
-                    <label> email  <input type={"text"} className={"basic-input"} id={"email-input"} placeholder={"username..."}/>  </label>
-                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
-                    <label> confirm password<input type={"password"} placeholder={"confirm password..."} className={"basic-input"}/>  </label>
+                    <label> email  <input type={"email"} className={"basic-input"} id={"email-input"} placeholder={"username..."} name={"email"} autoComplete={"email"}/>  </label>
+                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"} name={"password"} autoComplete={"off"}/>  </label>
+                    <label> confirm password<input type={"password"} placeholder={"confirm password..."} className={"basic-input"} name={"confirm-password"} autoComplete={"off"}/>  </label>
                     <div className={"send-fetch-container"}>
                         <button className={"login-btn"} > register </button>
                         <p hidden={!errorMessage && !isLoading}>{errorMessage}</p>

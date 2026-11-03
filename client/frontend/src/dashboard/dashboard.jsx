@@ -1,22 +1,27 @@
 import "../../styles/general.css";
-import "./dashboard.css"
+import "./dashboard.css";
+import "../../styles/scrollbar.css";
+
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import testData from "./testData.js";
+import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 
 
 export const Dashboard = () => {
-
+    const [isLoading] = useRedirectLoggedOutUser();
     const artists = testData.compressedTopItems.artists;
     const tracks = testData.compressedTopItems.tracks;
     // const [isLoading ,userData] = useGetDataOrRedirect();
     return (
         <>
             <TopMenu/>
-            <main>
+            {isLoading && <h1> LOADING...</h1>}
+            {!isLoading && <main>
                 <ListeningPeriod periodName={"LAST MONTH"} artists={artists.shortTerm} songs={tracks.shortTerm}/>
                 <ListeningPeriod periodName={"LAST 6 MONTHS"} artists={artists.mediumTerm} songs={tracks.mediumTerm}/>
                 <ListeningPeriod periodName={"LAST YEAR "} artists={artists.longTerm} songs={tracks.longTerm}/>
             </main>
+            }
         </>
     )
 }
