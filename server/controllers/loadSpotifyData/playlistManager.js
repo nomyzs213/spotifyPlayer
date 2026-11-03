@@ -93,13 +93,13 @@ import session from "express-session";
         }
 
 
-        async #getTracksDetails(req, res) {
+        async #getTracksDetails(req, res , playlistId) {
             if (!req.session.user) throwError("unauthorized access", 401);
             if (req.body.id) throwError("something went wrong with choosing playlist", 500);
 
 
             const allItems = [];
-            const reqUrl = req.body.id;
+            const reqUrl = `https://api.spotify.com/v1/playlists/${playlistId}/items`;
             const accessToken = req.session.user.accessToken;
             const max = "?limit=50";
             const filter = "&fields=items(track(name ,artists(name) , uri) ),next";
@@ -357,9 +357,17 @@ import session from "express-session";
 
 
         async proceed(req, res){
-            let allSongs;
+            let allSongs = [];
+            const idsArr = req.body.idsArr;
+
             if(req.body.likedSongs)  allSongs = await this.#getLikedSongs(req,res);
-            else  allSongs = await this.#getTracksDetails(req, res);
+            if(idsArr){
+                for(let i = 0; i < idsArr.length; i++){
+                    const songs = await this.#getTracksDetails(req, res, idsArr[i]);
+                    allSongs.push(...songs);
+                }
+            }
+
             const matchingSongs = await this.#getSongsMoodTags(req, res, allSongs);
 
             if(!matchingSongs) res.status(200).json({

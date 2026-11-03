@@ -2,12 +2,12 @@ import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
 import "./playlists.css";
 import {testPlaylists} from "./testData.js";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {useLikedSongs} from "../../custom_hooks/usePlaylists.js";
 
 export const Playlists = () => {
-    const [selected, setSelected] = useState(null);
-    const [playlistName, setName] = useState(null);
+    const [selected, setSelected] = useState([]);
+    const [playlistNames, setNames] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, hasLikedSongs] = useLikedSongs();
 
@@ -26,6 +26,21 @@ export const Playlists = () => {
         }
     }
 
+    const updateSelected = (p) => {
+        setSelected(prevState=>{
+            if(prevState.includes(p.id)) return [...prevState.filter(name => name !== p.id)];
+            else if(prevState.length < 5 ) return [...prevState, p.id];
+            else return [...prevState];
+        });
+
+        setNames(prevState => {
+            if(prevState.includes(p.title)) return [...prevState.filter(title => title !== p.title)];
+            else if(prevState.length < 5) return [...prevState, p.title];
+            else return [...prevState];
+        });
+
+    }
+
     return(
         <>
             <TopMenu/>
@@ -38,7 +53,7 @@ export const Playlists = () => {
                             key={p.id}
                             id={p.id}
                             selected={selected}
-                            onClick={() => {setSelected(p.id); setName(p.title)}} />)}
+                            onClick={() => updateSelected(p)} />)}
                     </div>
                 </section>
 
@@ -51,7 +66,7 @@ export const Playlists = () => {
                         <button className={"action-btn"}>GENERATE PLAYLIST</button>
                     </section>
 
-                    <p className={"select-box"}>SELECTED PLAYLIST: {playlistName ? playlistName.toUpperCase() : "NONE"} </p>
+                    <div className={"select-box"}>SELECTED PLAYLIST: {playlistNames.length> 0 ? playlistNames.map(n => <p>{n}</p>) : "NONE"} </div>
                 </div>
 
                 {!isLoading  && <h2>LOADING...</h2> }
@@ -61,10 +76,11 @@ export const Playlists = () => {
 }
 
 function Playlist({item, id, selected, onClick} ){
+
     return (
         <section className={"playlist"} onClick={onClick}>
 
-            <div className={`img-box ${selected === id ? 'selected-playlist' : ""}`} id={`${id}`}>
+            <div className={`img-box ${selected.includes(id) ? 'selected-playlist' : ""}`} id={`${id}`}>
                 <img src={item.src} alt={"playlist img"}/>
             </div>
             <h3>{item.title}</h3>

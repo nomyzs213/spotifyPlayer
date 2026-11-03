@@ -1,7 +1,6 @@
 import "../../styles/general.css";
 import "./dashboard.css"
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
-import defaultImage from "../assets/defaultUser.png"
 import testData from "./testData.js";
 
 
