@@ -85,7 +85,7 @@ function Playlist({item, id, selected, onClick} ){
         <section className={"playlist"} onClick={onClick}>
 
             <div className={`img-box ${selected.includes(id) ? 'selected-playlist' : ""}`} id={`${id}`}>
-                <img src={item.src} alt={"playlist img"}/>
+                <img src={item.src} alt={"playlist img"} loading={"lazy"}/>
             </div>
             <p>{item.songCount} items</p>
             <h3>{item.title}</h3>

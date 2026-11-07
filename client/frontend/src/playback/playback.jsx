@@ -44,7 +44,7 @@ const Item = ({item}) => {
     return (
         <>
             <section className={"item"}>
-                <div className={"img-box"}> <img src={item.src} alt={"song cover"}/></div>
+                <div className={"img-box"}> <img src={item.src} alt={"song cover"} loading={"lazy"}/></div>
                 <h2>{item.title}</h2>
             </section>
         </>
@@ -56,7 +56,7 @@ const CurrentlyPlaying = ({currentlyPlaying, songLength}) =>{
         <>
             <div className={"currently-playing"}>
                 <section className={"currently-playing"}>
-                   <div className={"currently-playing-img-box"}>  <img src={currentlyPlaying.image} alt={"song cover"} className={"currently-playing-img"}/> </div>
+                   <div className={"currently-playing-img-box"}>  <img loading={"lazy"} src={currentlyPlaying.image} alt={"song cover"} className={"currently-playing-img"}/> </div>
                     <h3>{currentlyPlaying.title}</h3>
                     <Controls songLength={songLength}/>
                 </section>
@@ -83,9 +83,9 @@ const Controls = ({songLength}) => {
             <div className={"controls"}>
                <label><input ref={progressSlider} onChange={() => {calculateProgress(songLength, parseInt(progressSlider.current.value))}} type={"range"} min={0} max={100} step={1} className={"progress-slider"}/>{progress}</label>
                 <div className={"controls-container"}>
-                    <button className={"controls-button"}> <img src={goBack} alt={"play state icon"}/> </button>
-                    <button className={"controls-button"} onClick={() => setIsPlaying(prevState => !prevState)} ><img src={isPlaying ? stopPlaying : resume} alt={"play state icon"}/></button>
-                    <button className={"controls-button"}><img src={skip} alt={"skip song icon"}/> </button>
+                    <button className={"controls-button"}> <img src={goBack} alt={"play state icon"} loading={"lazy"}/> </button>
+                    <button className={"controls-button"} onClick={() => setIsPlaying(prevState => !prevState)} ><img loading={"lazy"} src={isPlaying ? stopPlaying : resume} alt={"play state icon"}/></button>
+                    <button className={"controls-button"}><img src={skip} alt={"skip song icon"} loading={"lazy"}/> </button>
                 </div>
             </div>
         </>

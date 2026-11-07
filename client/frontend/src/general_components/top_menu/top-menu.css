@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
 
-.top-menu{
+.classic-menu, .burger-menu{
     width: 100vw;
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 999;
 }
-.top-menu, .buttons-container {
+.classic-menu, .burger-menu, .buttons-container {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -40,4 +40,60 @@
 
 .how{
     font-size: clamp(0.6rem, 1rem , 2rem);
+}
+
+.burger-container {
+    width: 100vw;
+    background-color: black;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+
+.burger-menu-button {
+    border: transparent solid 1px;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    width: 60px;
+    padding: 10px;
+}
+
+.burger-icon {
+    background-color: transparent;
+    width: 100%;
+    text-align: center;
+}
+
+.options-container{
+    position: fixed;
+    border-radius: 20px;
+    top: 10vh;
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    width: auto;
+    height: auto;
+    z-index: 1000;
+    font-size: clamp(0.7rem, 0.8rem, 0.9rem);
+}
+
+.burger-item {
+    background-color: transparent;
+}
+
+@media only screen and (max-width: 768px){
+    root{
+        font-size: 12px;
+    }
 }

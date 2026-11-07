@@ -7,22 +7,22 @@ export const ProfileButton = ({username, src, isLoading, loggedIn}) => {
     return(
         <>
             {!isLoading && loggedIn &&
-                <div className={"user-icon-container"}>
+                <li className={"user-icon-container"}>
                 <h3>{username}</h3>
-                <img src={src} alt={"user-icon"} className={"user-icon-img"}/>
-            </div>
+                <img src={src} alt={"user-icon"} className={"user-icon-img"} loading={"lazy"}/>
+            </li>
             }
 
             {!isLoading && !loggedIn &&
-                <div className={"logged-out"}>
+                <li className={"logged-out"}>
                 <h3><a href={"./login.html"}>LOGIN/REGISTER</a></h3>
-            </div>
+            </li>
             }
 
             {isLoading &&
-                <div className={"smaller-loading"}>
+                <li className={"smaller-loading"}>
                 <p>loading...</p>
-            </div>
+            </li>
             }
         </>
     )
