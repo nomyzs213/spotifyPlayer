@@ -1,6 +1,7 @@
 import bcrypt  from "bcrypt";
 import {user} from "../models/table_relations.js";
-import {Op} from "sequelize";
+import pkg from "sequelize";
+const { Op } = pkg;
 import {sendLinkingReq} from "./linkingReq.js";
 import {isHttps} from "../config/cookieInfo.js";
 import {throwError} from "../utlils/errorManager.js";
@@ -8,13 +9,16 @@ import {throwError} from "../utlils/errorManager.js";
 
 
 async function register(req , res){
-    let {username , email , password} = req.body.registrationData;
-    if(!username || !email || !password) throwError("invalid login credentials" , 400);
+    let {username , email ,password, confirmPassword} = req.params.registrationData;
+    if(!username || !email || !password || !confirmPassword) throwError("invalid login credentials" , 400);
 
     if(username.toLowerCase() === username && username.length >= 3 && email.length >= 3 && email.toLowerCase() === email && password.length >= 8) {
         username = username.toLowerCase().replace(/\s+/g , "");
         email = email.toLowerCase().replace(/\s+/g , "");
         password = password.replace(/\s+/g , "");
+        confirmPassword = confirmPassword.replace(/\s+/g , "");
+
+        if(confirmPassword !== password) throwError("invalid password confirmation" , 400);
 
         try{
             const salt = await bcrypt.genSalt(10);

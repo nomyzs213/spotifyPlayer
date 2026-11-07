@@ -21,11 +21,20 @@ loadPlaylists.get('/api/getPlaylists' , async (req, res, next) => {
 loadPlaylists.get('/api/generatePlaylists' , async (req, res , next) => {
     try{
         await playlistManager.proceed(req, res);
+        return res.status(204);
     }
     catch (err){
         return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 });
 
-
+loadPlaylists.post('/api/getLikedSongs' , async (req, res) => {
+    try{
+        const hasLikedSongs = await playlistManager.hasLikedSongs(req, res);
+        return res.status(200).json({hasLikedSongs});
+    }
+    catch (err){
+        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
+    }
+})
 export default loadPlaylists;

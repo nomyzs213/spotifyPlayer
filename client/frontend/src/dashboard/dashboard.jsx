@@ -1,23 +1,27 @@
 import "../../styles/general.css";
-import "./dashboard.css"
+import "./dashboard.css";
+import "../../styles/scrollbar.css";
+
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
-import defaultImage from "../assets/defaultUser.png"
 import testData from "./testData.js";
+import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 
 
 export const Dashboard = () => {
-
+    const [isLoading] = useRedirectLoggedOutUser();
     const artists = testData.compressedTopItems.artists;
     const tracks = testData.compressedTopItems.tracks;
     // const [isLoading ,userData] = useGetDataOrRedirect();
     return (
         <>
-            <TopMenu username={"username"} profileImgSrc={defaultImage} isLoading={false}  loggedIn={true}/>
-            <main>
+            <TopMenu/>
+            {isLoading && <h1> LOADING...</h1>}
+            {!isLoading && <main>
                 <ListeningPeriod periodName={"LAST MONTH"} artists={artists.shortTerm} songs={tracks.shortTerm}/>
                 <ListeningPeriod periodName={"LAST 6 MONTHS"} artists={artists.mediumTerm} songs={tracks.mediumTerm}/>
                 <ListeningPeriod periodName={"LAST YEAR "} artists={artists.longTerm} songs={tracks.longTerm}/>
             </main>
+            }
         </>
     )
 }
@@ -32,12 +36,12 @@ const ListeningPeriod = ({periodName , artists , songs}) => {
                 <div className={"content-container"}>
                     <section className={"top-artists stats-container"}>
                         <h2>ARTISTS</h2>
-                        {artists.map(obj => <Artist artist={obj}/>)}
+                        {artists.map(obj => <Artist artist={obj} key={obj.id}/>)}
                     </section>
 
                     <section className={"top-songs stats-container"}>
                         <h2>SONGS</h2>
-                        {songs.map(obj => <Song song={obj}/>)}
+                        {songs.map(obj => <Song song={obj} key={obj.id}/>)}
                     </section>
                 </div>
 
@@ -51,11 +55,14 @@ const Artist = ({artist}) => {
     return (
         <>
             <div className={"artist-box"}>
-                <section className={"artist"}>
-                    <h3>{`${artist.position}.`} {artist.name}</h3>
+                <div className={"artist"}>
+                    <section>
+                        <h3>{`${artist.position}.`} {artist.name}</h3>
+                        <a href={artist.spotifyLink}  target={"_blank"} className={"spotify-link"}>see on Spotify</a>
+                    </section>
                     <img src={artist.image} alt={"artist profile img"}/>
-                </section>
-                <a href={artist.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                </div>
+
             </div>
         </>
     )
@@ -67,11 +74,14 @@ const Song = ({song}) => {
     return (
         <>
             <div className={"song-box"}>
-                <section className={"song"}>
-                    <h3 className={"track-title"}>{`${song.position}.`}{song.name} - {artists}</h3>
+                <div className={"song"}>
+                    <section>
+                        <h3 className={"track-title"}>{`${song.position}.`}{song.name} - {artists}</h3>
+                        <a href={song.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>
+                    </section>
                     <div className={"img-box"}> <img src={song.image} alt={"song image"}/> </div>
-                </section>
-                <a href={song.spotifyLink} className={"spotify-link"}>see on Spotify</a>
+                </div>
+
             </div>
 
 

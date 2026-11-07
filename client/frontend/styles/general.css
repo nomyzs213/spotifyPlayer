@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
+body{
+    overflow: hidden;
+}
 * {
     margin: 0;
     padding: 0;
@@ -14,7 +17,7 @@
 h1{
     font-size: 5vh;
 }
-.register-btn, .login-btn {
+.register-btn, .login-btn, .reset-btn  {
     border-radius: 33rem;
     background-color: #4AAE17;
     font-size: 1.5rem;
@@ -22,10 +25,10 @@ h1{
     width: 150px;
     padding: 12px 24px;
     margin-top: 1rem;
-    margin-bottom: 3vh;
+    margin-bottom: 1vh;
 }
 
-.register-btn:hover , .login-btn:hover{
+.register-btn:hover , .login-btn:hover, .reset-btn:hover{
     background-color: #52a32f;
 }
 
@@ -53,4 +56,8 @@ label{
 
 .loading{
     font-size: clamp(3rem , 4rem , 5rem);
+}
+
+.auth-redirect{
+    text-decoration: underline white;
 }

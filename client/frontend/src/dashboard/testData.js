@@ -3,30 +3,35 @@ const testData = {
         artists: {
             shortTerm: [
                 {
+                    id: "artist_st_1",
                     name: "Kendrick Lamar",
                     image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
                     spotifyLink: "https://open.spotify.com/artist/2YZyloF8N0Wb9xzh1NhZWg",
                     position: 1
                 },
                 {
+                    id: "artist_st_2",
                     name: "Playboi Carti",
                     image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=500",
                     spotifyLink: "https://open.spotify.com/artist/699OTQXzgjhIYAHMy9RyPD",
                     position: 2
                 },
                 {
+                    id: "artist_st_3",
                     name: "A$AP Rocky",
                     image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500",
                     spotifyLink: "https://open.spotify.com/artist/13ubrt8OPOJRC+...",
                     position: 3
                 },
                 {
+                    id: "artist_st_4",
                     name: "Tyler, The Creator",
                     image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=500",
                     spotifyLink: "https://open.spotify.com/artist/4V8LLVI7PbaPR0K2TGSxFF",
                     position: 4
                 },
                 {
+                    id: "artist_st_5",
                     name: "Kanye West",
                     image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500",
                     spotifyLink: "https://open.spotify.com/artist/5K4W6rqBFWDnAN6FQUkS6x",
@@ -35,30 +40,35 @@ const testData = {
             ],
             mediumTerm: [
                 {
+                    id: "artist_mt_1",
                     name: "Travis Scott",
                     image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500",
                     spotifyLink: "https://open.spotify.com/artist/0Y5tJX1MQlPlqiwlOH1tJY",
                     position: 1
                 },
                 {
+                    id: "artist_mt_2",
                     name: "Future",
                     image: "https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?w=500",
                     spotifyLink: "https://open.spotify.com/artist/1Ryvyy8hxzRjzVMJKUMm1b",
                     position: 2
                 },
                 {
+                    id: "artist_mt_3",
                     name: "Young Thug",
                     image: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500",
                     spotifyLink: "https://open.spotify.com/artist/50co4IsCDNYICm205rR0gK",
                     position: 3
                 },
                 {
+                    id: "artist_mt_4",
                     name: "Gunna",
                     image: "https://images.unsplash.com/photo-1520523839896-5aa4286f941c?w=500",
                     spotifyLink: "https://open.spotify.com/artist/2hlmm7wMICOK1dZMnMWYEU",
                     position: 4
                 },
                 {
+                    id: "artist_mt_5",
                     name: "Metro Boomin",
                     image: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500",
                     spotifyLink: "https://open.spotify.com/artist/0izaZbcmUAUebj4ZgW1Gq5",
@@ -67,30 +77,35 @@ const testData = {
             ],
             longTerm: [
                 {
+                    id: "artist_lt_1",
                     name: "Guns N' Roses",
                     image: "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?w=500",
                     spotifyLink: "https://open.spotify.com/artist/3qm84nboxUEQ2vnTfUTTFC",
                     position: 1
                 },
                 {
+                    id: "artist_lt_2",
                     name: "2Pac",
                     image: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=500",
                     spotifyLink: "https://open.spotify.com/artist/1ZwdSsrxhbi8CAI2qPFExn",
                     position: 2
                 },
                 {
+                    id: "artist_lt_3",
                     name: "Outkast",
                     image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
                     spotifyLink: "https://open.spotify.com/artist/1G9G7WvxXka3ZMsDgzWCAL",
                     position: 3
                 },
                 {
+                    id: "artist_lt_4",
                     name: "Eazy-E",
                     image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500",
                     spotifyLink: "https://open.spotify.com/artist/6PZYzotWEepb1g88uX4jVp",
                     position: 4
                 },
                 {
+                    id: "artist_lt_5",
                     name: "Pusha T",
                     image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500",
                     spotifyLink: "https://open.spotify.com/artist/0ONHwAv99xZ8v1191z5b5E",
@@ -101,6 +116,7 @@ const testData = {
         tracks: {
             shortTerm: [
                 {
+                    id: "track_st_1",
                     name: "HUMBLE.",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500",
@@ -109,6 +125,7 @@ const testData = {
                     position: 1
                 },
                 {
+                    id: "track_st_2",
                     name: "FEIN.",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500",
@@ -117,6 +134,7 @@ const testData = {
                     position: 2
                 },
                 {
+                    id: "track_st_3",
                     name: "Praise The Lord (Da Shine)",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500",
@@ -125,6 +143,7 @@ const testData = {
                     position: 3
                 },
                 {
+                    id: "track_st_4",
                     name: "EARFQUAKE",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
@@ -133,6 +152,7 @@ const testData = {
                     position: 4
                 },
                 {
+                    id: "track_st_5",
                     name: "OFF THE GRID",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=500",
@@ -143,6 +163,7 @@ const testData = {
             ],
             mediumTerm: [
                 {
+                    id: "track_mt_1",
                     name: "SICKO MODE",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500",
@@ -151,6 +172,7 @@ const testData = {
                     position: 1
                 },
                 {
+                    id: "track_mt_2",
                     name: "CARNIVAL",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=500",
@@ -159,6 +181,7 @@ const testData = {
                     position: 2
                 },
                 {
+                    id: "track_mt_3",
                     name: "Mask Off",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500",
@@ -167,6 +190,7 @@ const testData = {
                     position: 3
                 },
                 {
+                    id: "track_mt_4",
                     name: "King's Dead",
                     isLocal: true,
                     image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500",
@@ -175,6 +199,7 @@ const testData = {
                     position: 4
                 },
                 {
+                    id: "track_mt_5",
                     name: "fukumean",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?w=500",
@@ -185,6 +210,7 @@ const testData = {
             ],
             longTerm: [
                 {
+                    id: "track_lt_1",
                     name: "Sweet Child O' Mine",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?w=500",
@@ -193,6 +219,7 @@ const testData = {
                     position: 1
                 },
                 {
+                    id: "track_lt_2",
                     name: "Ambitionz Az A Ridah",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=500",
@@ -201,6 +228,7 @@ const testData = {
                     position: 2
                 },
                 {
+                    id: "track_lt_3",
                     name: "Hey Ya!",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
@@ -209,6 +237,7 @@ const testData = {
                     position: 3
                 },
                 {
+                    id: "track_lt_4",
                     name: "Boyz-n-the-Hood",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500",
@@ -217,6 +246,7 @@ const testData = {
                     position: 4
                 },
                 {
+                    id: "track_lt_5",
                     name: "Diet Coke",
                     isLocal: false,
                     image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500",

@@ -10,6 +10,7 @@ import {sequelize} from "../config/database.js";
 import {throwError, createError} from "../utlils/errorManager.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 import {sessionActions} from "../utlils/session_actions.js";
+import {isHttps} from "../config/cookieInfo.js";
 
 binding.use(cookieParser());
 binding.get('/api/binding' , async (req , res , next) => {
@@ -47,10 +48,25 @@ binding.get('/api/binding' , async (req , res , next) => {
             return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
         }
     }
+    req.cookie("binding_success" , true , {
+        httpOnly: true,
+        secure: isHttps,
+        maxAge: 1000 * 60 * 15
+    });
 
 })
 
-
+binding.get("/api/getBindingStatus" , (req , res, next) => {
+    try{
+        const status = req.cookies.binding_success === "true";
+        res.clearCookie("binding_success");
+        if(status) return res.status(204);
+        throwError("no binding status" , 401);
+    }
+    catch (err){
+        return res.status(err.status).json({message: err.message , status: err.status});
+    }
+});
 
 async function bindNewAccount(req, res) {
     const code = req.query.code;

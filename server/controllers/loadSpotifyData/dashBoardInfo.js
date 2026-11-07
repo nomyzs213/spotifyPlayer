@@ -6,8 +6,7 @@ import areCodesExpired from "../../utlils/areCodesExpired.js";
 class dashboard{
     async getUserProfile( accessToken){
         const url = "https://api.spotify.com/v1/me";
-        if(!accessToken) throwError("unauthorized access", 401);
-
+        if(!accessToken) return [];
         const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -15,13 +14,16 @@ class dashboard{
             }
         });
 
-        if(!response.ok) throwError(response.statusText, response.status);
+        if(!response.ok) {
+            const data = await response.json();
+            throwError(data.error.message, data.error.status);
+        }
 
         const data = await response.json();
-        if(!data.account_id) throwError(data.message, data.status);
-        const {account_id, display_name, images} = data;
-
-        return [account_id, display_name, images];
+        if(!data.account_id) throwError(data.error.message, data.error.status);
+        const {display_name, images} = data;
+        const imageUrl = images[-1];
+        return [display_name, imageUrl];
     }
 
     async #getTopItems(accessToken , type){

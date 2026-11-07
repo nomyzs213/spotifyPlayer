@@ -58,13 +58,14 @@ export const LoginPage = () => {
                 <p hidden={!isLoading} className={"loading"}>LOADING...</p>
                 <section className={"form-section"} hidden={!isLoading}>
                     <h1>Log in</h1>
-                    <label> email  <input type={"text"} className={"basic-input"} id={"email-input"} placeholder={"username..."}/>  </label>
-                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"}/>  </label>
+                    <label> email  <input type={"email"} className={"basic-input"} id={"email-input"} placeholder={"username..."} name={"email"} autoComplete={"email"}/>  </label>
+                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"} name={"password"} autoComplete={"off"}/>  </label>
 
                     <div className={"send-fetch-container"}>
                         <button  onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
                         <p hidden={!errorMessage}>{errorMessage}</p>
                     </div>
+                    <a href={"/htmls/register.html"} className={"auth-redirect"}>not registered yet?</a>
                 </section>
             </main>
 

@@ -1,6 +1,6 @@
-import {DataTypes} from "sequelize";
+import pkg from "sequelize";
+const { DataTypes } = pkg;
 import {sequelize} from "../config/database.js";
-
 export const user =  sequelize.define("User" , {
     id: {
         type: DataTypes.UUID,
