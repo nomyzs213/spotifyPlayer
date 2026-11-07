@@ -16,6 +16,7 @@ export default defineConfig({
         resetPasswordEmailForm: resolve(__dirname, 'htmls/passwordReset/email.html'),
         resetPasswordCode: resolve(__dirname, "htmls/passwordReset/code.html"),
         resetPasswordConfirmation: resolve(__dirname, 'htmls/passwordReset/passwordConfirmation.html'),
+        account: resolve(__dirname, "htmls/account.html"),
         dashboard: resolve(__dirname, 'htmls/dashboard.html'),
         error401: resolve(__dirname, 'htmls/errors/401.html'),
         error403: resolve(__dirname, 'htmls/errors/403.html'),
