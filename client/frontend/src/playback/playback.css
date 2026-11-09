@@ -142,3 +142,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
    margin-bottom: 2vh;
 }
 
+.mobile-song-container{
+}
+
+.close-menu:hover{
+    color: red;
+}

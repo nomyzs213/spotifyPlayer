@@ -2,34 +2,55 @@ import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
 import "./playback.css";
 import "../../styles/scrollbar.css";
-
 import {testCurrentlyPlaying , testQueueItems, testRecentlyPlayed} from "./testData.js";
 import {useRef, useState} from "react";
 import stopPlaying from "./playback_icons/stop.svg";
 import resume from "./playback_icons/resume.svg";
 import skip from "./playback_icons/skip.svg";
 import goBack from "./playback_icons/go_back.svg";
+import {useMediaQuery} from "@uidotdev/usehooks";
+
 import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 export const Playback = () => {
-    const [isLoading] = useRedirectLoggedOutUser();
+    // const [isLoading] = useRedirectLoggedOutUser();
     const testSongLength = 3 * 60 * 1000;
+    const isPhone = useMediaQuery("only screen and (max-width: 768px)");
+    const [recentlyPlayedOpen, setRecentlyPlayedOpen] = useState(false);
+    const [queueOpen, setQueueOpen] = useState(false);
+
+    const recentlyPlayedContainer = useRef(null);
+    const queueContainer = useRef(null);
+    let isLoading
+    if(isLoading === undefined || isLoading === null)  isLoading = false;
     return (
         <>
             <TopMenu/>
             {isLoading && <h1>LOADING...</h1>}
             {!isLoading && <main>
-                <SongContainer type={"QUEUE"} items={testQueueItems}/>
-                <CurrentlyPlaying currentlyPlaying={testCurrentlyPlaying} songLength={testSongLength}/>
-                <SongContainer type={"RECENTLY PLAYED"} items={testRecentlyPlayed}/>
+                {!isPhone && <SongContainer type={"QUEUE"} items={testQueueItems} isPhone={isPhone}/>}
+
+                 <CurrentlyPlaying currentlyPlaying={testCurrentlyPlaying} songLength={testSongLength}/>
+
+                {isPhone && <div>
+                    <button className={"last-played"} onClick={() => setRecentlyPlayedOpen(true)}>RECENTLY PLAYED</button>
+                    <button className={"queue"} onClick={() => setQueueOpen(true)}>QUEUE</button>
+                </div>}
+                {isPhone && recentlyPlayedOpen && <SongContainer ref={queueContainer}
+                    type={"QUEUE"} items={testQueueItems} isPhone={isPhone} setClicked={setQueueOpen}/> }
+                {(!isPhone || (recentlyPlayedOpen  && isPhone) ) &&<SongContainer ref={recentlyPlayedContainer}
+                    type={"RECENTLY PLAYED"} items={testRecentlyPlayed} isPhone={isPhone} setClicked={setRecentlyPlayedOpen}/>}
+
             </main>}
         </>
     )
 }
 
-const SongContainer = ({items, type}) => {
+const SongContainer = ({items, type, isPhone, setClicked , ref}) => {
     return(
         <>
-            <section>
+            <section ref={ref} className={isPhone ? "mobile-song-container" : ""}>
+                <div className={"slide-down"}> </div>
+                <button className={"close-button"} onClick={() => setClicked(false)}>X</button>
                 <h2 className={"song-container-heading"}>{type}</h2>
                 <div className={"song-container"}>
                     {items.map(i => <Item key={i.id} item={i}/> )}
