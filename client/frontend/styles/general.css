@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Monomaniac+One&display=swap');
 body{
-    overflow: hidden;
+    overflow: auto;
 }
 * {
     margin: 0;
@@ -60,4 +60,16 @@ label{
 
 .auth-redirect{
     text-decoration: underline white;
+}
+
+.close-popup{
+    align-self: flex-end;
+    margin-right: 5vw;
+    border: none;
+    background-color: transparent;
+    font-size: 3rem;
+}
+
+.close-popup:hover{
+    color: red;
 }

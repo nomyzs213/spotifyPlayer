@@ -8,7 +8,7 @@ import {useLikedSongs} from "../../custom_hooks/usePlaylists.js";
 import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 
 export const Playlists = () => {
-    const [isLoading] = useRedirectLoggedOutUser();
+    // const [isLoading] = useRedirectLoggedOutUser();
     const [selected, setSelected] = useState([]);
     const [playlistNames, setNames] = useState([]);
     const [error, setError] = useState(null);
@@ -16,6 +16,7 @@ export const Playlists = () => {
 
     const moods = ["energetic" , "chill" , "sad" , "happy"];
 
+    const isLoading = false;
     const generate = async (selected) => {
         const response = await fetch(`/api/generatePlaylists?id=${selected}`, {
             method: "GET",
