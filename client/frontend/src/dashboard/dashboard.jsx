@@ -6,17 +6,21 @@ import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import testData from "./testData.js";
 import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 import {useMediaQuery} from "@uidotdev/usehooks";
-import {useState ,useId} from "react";
+import {useEffect, useState} from "react";
+import {useDashboard} from "../../custom_hooks/useDashboard.js";
+
 
 export const Dashboard = () => {
-    // const [isLoading] = useRedirectLoggedOutUser();
-    const artists = testData.compressedTopItems.artists;
-    const tracks = testData.compressedTopItems.tracks;
-    // const [isLoading ,userData] = useGetDataOrRedirect();
-    const isLoading = false;
+    const [isLoading] = useRedirectLoggedOutUser();
+    const listeningData = useDashboard();
+
+    const artists = listeningData.compressedTopItems.artists;
+    const tracks = listeningData.compressedTopItems.tracks;
+
     const isPhone = useMediaQuery("only screen and (max-width: 768px)");
     const [moreSongsOpened , setMoreSongsOpened] = useState(null);
     const [moreArtistsOpened, setMoreArtistsOpened] = useState(null);
+
     return (
         <>
             {!moreArtistsOpened && !moreSongsOpened && <TopMenu/>}
@@ -82,6 +86,9 @@ export const Dashboard = () => {
                         />
                     )}
 
+
+
+
                     {/*ARTISTS*/}
 
                     {moreArtistsOpened === "last-month" && (
@@ -116,21 +123,21 @@ export const Dashboard = () => {
 
 const MobileTopItems = ({periodName ,songs, artists, setMoreSongsOpened , setMoreArtistsOpened}) => {
     const periodReplaced = periodName.trimStart().trimEnd().replaceAll(" ", "-").toLowerCase();
+
+
     return(
-        <>
-            <h2>{periodName}</h2>
+        <div className={"mobile-compressed-top"}>
+            <h2 className={"period-heading"}>{periodName}</h2>
             <div className={"period-item"}>
-                <h3>Top songs</h3>
-                <Song song={songs[0]}/>
-                <button className={"see-more"} onClick={()=> setMoreSongsOpened(periodReplaced)}>see more songs</button>
+                <h2>Top songs</h2>
+                <Song song={songs[0]} text={"see more songs"} periodReplaced={periodReplaced} setFunction={setMoreSongsOpened}/>
             </div>
 
             <div className={"period-item"}>
-                <h3>Top artists</h3>
-                <Artist artist={artists[0]}/>
-                <button className={"see-more"}  onClick={()=> setMoreArtistsOpened(periodReplaced)}>see more artists</button>
+                <h2 className={"period-heading"}>Top artists</h2>
+                <Artist artist={artists[0]} text={"see more artists"} periodReplaced={periodReplaced} setFunction={setMoreArtistsOpened}/>
             </div>
-        </>
+        </div>
     )
 }
 
@@ -155,6 +162,13 @@ const MobileItemList = ({items , setMoreSongsOpened , setMoreArtistsOpened , isS
         </>
     )
 }
+
+const SeeMoreBtn = ({text, periodReplaced, setFunction}) => {
+    return (
+        <button className={"see-more"} onClick={()=> setFunction(periodReplaced)}>{text}</button>
+    )
+}
+
 const ListeningPeriod = ({periodName , artists , songs}) => {
     return (
         <>
@@ -179,14 +193,21 @@ const ListeningPeriod = ({periodName , artists , songs}) => {
     )
 }
 
-const Artist = ({artist}) => {
+const Artist = ({artist, text, periodReplaced, setFunction}) => {
     return (
         <>
             <div className={"artist-box"}>
                 <div className={"artist"}>
                     <section>
                         <h3>{`${artist.position}.`} {artist.name}</h3>
-                        <a href={artist.spotifyLink}  target={"_blank"} className={"spotify-link"}>see on Spotify</a>
+                        {!setFunction && <a href={artist.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>}
+                        {setFunction &&
+                            (
+                                <div className={"item-links"}>
+                                    <a href={artist.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>
+                                    <SeeMoreBtn text={text} periodReplaced={periodReplaced} setFunction={setFunction}/>
+                                </div>
+                            )}
                     </section>
                     <img src={artist.image} alt={"artist profile img"} loading={"lazy"}/>
                 </div>
@@ -196,7 +217,7 @@ const Artist = ({artist}) => {
     )
 }
 
-const Song = ({song}) => {
+const Song = ({song,text, periodReplaced, setFunction}) => {
     const artists = song.artists.join(",");
 
     return (
@@ -205,7 +226,14 @@ const Song = ({song}) => {
                 <div className={"song"}>
                     <section>
                         <h3 className={"track-title"}>{`${song.position}.`}{song.name} - {artists}</h3>
-                        <a href={song.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>
+                        {!setFunction && <a href={song.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>}
+                        {setFunction &&
+                            (
+                                <div className={"item-links"}>
+                                    <a href={song.spotifyLink} target={"_blank"} className={"spotify-link"}>see on Spotify</a>
+                                    <SeeMoreBtn text={text} periodReplaced={periodReplaced} setFunction={setFunction}/>
+                                </div>
+                            )}
                     </section>
                     <div className={"img-box"}> <img src={song.image} alt={"song image"} loading={"lazy"}/> </div>
                 </div>

@@ -28,7 +28,7 @@ loadPlaylists.get('/api/generatePlaylists' , async (req, res , next) => {
     }
 });
 
-loadPlaylists.post('/api/getLikedSongs' , async (req, res) => {
+loadPlaylists.post('/api/hasLikedSongs' , async (req, res) => {
     try{
         const hasLikedSongs = await playlistManager.hasLikedSongs(req, res);
         return res.status(200).json({hasLikedSongs});

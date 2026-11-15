@@ -6,7 +6,7 @@ main{
     justify-content: space-evenly;
     flex-direction: row;
     gap: 3vw;
-    margin-left: 3vw;
+    margin-top: 3vw;
 }
 
 .playlist-box{
@@ -50,7 +50,7 @@ main{
 }
 
 .creation-menu{
-    position: static;
+    position: sticky;
     z-index: 1000;
     top:0;
     left: 0;
@@ -91,3 +91,67 @@ main{
     color: #1db954;
 }
 
+@media only screen and (max-width: 768px){
+    body{
+        overflow-x: hidden;
+    }
+    *{
+        margin-left:0;
+        margin-right:0;
+    }
+    main{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .creation-menu {
+        position: static;
+        background-color: black;
+        padding: 5vw;
+        border-radius: 6%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 5vh;
+    }
+    .mobile-playlist-box{
+        position: absolute;
+        top: 0;
+        left: 8vw;
+        width: 100%;
+        overflow-y: scroll;
+        height: 100%;
+        margin-bottom: 5vh;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        background-color: black;
+
+    }
+    .img-box img{
+        height: 200px;
+        width: 200px;
+    }
+    .playlist{
+        max-width: 400px;
+        display: flex;
+        flex-direction: row;
+    }
+    .playlist-info{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+    .close-popup{
+        position: absolute;
+        top: 0;
+        z-index: 999;
+        left: 90vw;
+    }
+
+}

@@ -31,14 +31,15 @@ export const useLikedSongs = () => {
                     "Content-Type": "application/json"
                 }
             });
-
+            console.log("fetch responded \n" , response);
             if(!response.ok) {
                 const data = await response.json();
-                // redirect tutaj bedzie trzeba zrobic
+                console.log(data);
 
                 return;
             }
             const data = await response.json();
+            console.log("response ok:\n" , data)
             setLiked(data);
             setLoading(false);
         }

@@ -9,11 +9,12 @@ import {throwError} from "../utlils/errorManager.js";
 
 
 async function register(req , res){
-    let {username , email ,password, confirmPassword} = req.params.registrationData;
-    if(!username || !email || !password || !confirmPassword) throwError("invalid login credentials" , 400);
+    let email = req.body.email;
+    let password = req.body.password;
+    let confirmPassword = req.body.confirmPassword;
+    if(!email || !password || !confirmPassword) throwError("invalid login credentials" , 400);
 
-    if(username.toLowerCase() === username && username.length >= 3 && email.length >= 3 && email.toLowerCase() === email && password.length >= 8) {
-        username = username.toLowerCase().replace(/\s+/g , "");
+    if(email.length >= 3 && email.toLowerCase() === email && password.length >= 8) {
         email = email.toLowerCase().replace(/\s+/g , "");
         password = password.replace(/\s+/g , "");
         confirmPassword = confirmPassword.replace(/\s+/g , "");
@@ -25,16 +26,17 @@ async function register(req , res){
             const hashedPassword = await bcrypt.hash(password, salt);
             const alreadyExists = await user.findOne({
                 where: {
-                    [Op.or] : [ {username: username} , {email: email}]}
+                    email: email
+                }
             });
 
             if(alreadyExists) {
                 throwError("user already exists" , 409);
             }
 
-            const cookie = {username , email , hashedPassword};
+            const cookie = {email , hashedPassword};
             res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isHttps , maxAge: 1000 * 60 * 30});
-            await sendLinkingReq(req , res);
+            return true;
 
         }
         catch (err){

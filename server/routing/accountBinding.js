@@ -101,7 +101,6 @@ async function bindNewAccount(req, res) {
     const t = await sequelize.transaction();
     try {
         const createdUser = await user.create({
-            username: username,
             email: email,
             password_hash: hashedPassword
         }, { transaction: t });
@@ -132,7 +131,7 @@ async function bindExistingAccount(req ,res){
     const stateInCookies = req.cookies.state;
 
     if(!state  || !stateInCookies || !code){
-        clearCookies(res, 'pending_registration' , 'state');
+        clearCookies(res,'state');
         throwError("missing params from req.query or from cookies" , 400);
     }
 
@@ -172,7 +171,7 @@ async function bindExistingAccount(req ,res){
         throwError("db error" , 500);
     }
     finally {
-        clearCookies(res, 'pending_registration' , 'state');
+        clearCookies(res, 'state');
     }
 
     const found = await sessionActions.updateTokens(req);

@@ -1,4 +1,4 @@
-import {useState ,useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 import "./login-page.css";
 import "../../styles/general.css";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
@@ -9,9 +9,19 @@ export const LoginPage = () => {
     const [errorMessage, setMessage] = useState(null);
     const [isLoading] = useRedirectLoggedInUser();
 
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+
+
+
     const throwOrLogin = async () => {
-        const email = document.getElementById("email-input").value.replaceAll(" ");
-        const password = document.getElementById("password-input").value.replaceAll(" ");
+        setMessage(null);
+        setEmail(email.replaceAll(" " , "").toLowerCase());
+        setPassword(password.replaceAll(" " , ""));
+
         if(!email || !password) {
             setMessage("please enter your credentials");
             return;
@@ -56,17 +66,41 @@ export const LoginPage = () => {
             <TopMenu username={""} profileImgSrc={"none"} loggedIn={false} isLoading={isLoading}/>
             <main>
                 <p hidden={!isLoading} className={"loading"}>LOADING...</p>
-                <section className={"form-section"} hidden={!isLoading}>
+                {<section className={"form-section"} hidden={!isLoading}>
                     <h1>Log in</h1>
-                    <label> email  <input type={"email"} className={"basic-input"} id={"email-input"} placeholder={"username..."} name={"email"} autoComplete={"email"}/>  </label>
-                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"} name={"password"} autoComplete={"off"}/>  </label>
+
+                    <label> email
+                        <input
+                            type={"email"}
+                            className={"basic-input"}
+                            id={"email-input"}
+                            placeholder={"username..."}
+                            name={"email"}
+                            autoComplete={"email"}
+                            ref={emailRef}
+                            onInput={() => setEmail(emailRef.current.value)}
+                        />
+                    </label>
+
+                    <label>password
+                        <input
+                            type={"password"}
+                            placeholder={"password..."}
+                            className={"basic-input"}
+                            id={"password-input"}
+                            name={"password"}
+                            autoComplete={"current-password"}
+                            ref={passwordRef}
+                            onInput={()=> setPassword(passwordRef.current.value)}
+                        />
+                    </label>
 
                     <div className={"send-fetch-container"}>
                         <button  onClick={() => throwOrLogin()} className={"login-btn"} > log in</button>
-                        <p hidden={!errorMessage}>{errorMessage}</p>
+                        {errorMessage && <p>{errorMessage}</p>}
                     </div>
                     <a href={"/htmls/register.html"} className={"auth-redirect"}>not registered yet?</a>
-                </section>
+                </section>}
             </main>
 
         </>

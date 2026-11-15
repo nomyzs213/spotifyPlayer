@@ -1,7 +1,7 @@
 import "../../styles/general.css";
 import "../login/login-page.css";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useRedirectLoggedInUser} from "../../custom_hooks/sessionData.js";
 
 export const Register = () => {
@@ -9,14 +9,27 @@ export const Register = () => {
     const [errorMessage, setMessage] = useState(null);
     const [isLoading] = useRedirectLoggedInUser();
 
-    const throwOrRegister = () => {
-        const email = document.getElementById("email-input").value.replaceAll(" ");
-        const password = document.getElementById("password-input").value.replaceAll(" ");
-        const confirmPassword = document.getElementById("confirm-password-input").value.replaceAll(" ");
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState(null);
+
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+    const confirmPasswordRef = useRef(null);
+
+
+
+    const throwOrRegister = async () => {
+        setMessage(null);
 
         if(!email || !password || !confirmPassword) {
             setMessage("please enter your credentials");
         }
+
+        setEmail(email.replaceAll(" " , "").toLowerCase());
+        setPassword(password.replaceAll(" " , ""));
+        setConfirmPassword(confirmPassword.replaceAll(" " , ""));
+
 
         if(password.length < 8) {
             setMessage("password is to short.Please enter at least 8 characters.");
@@ -31,44 +44,84 @@ export const Register = () => {
 
         if( password !== confirmPassword) {
             setMessage("password confirmation does not match the password");
-        }
-    }
-
-    const register = async (email, username, password, confirmPassword) => {
-        const registrationData = {
-            email,
-            username,
-            password,
-            confirmPassword
-        };
-        
-        window.location.href = "/api/register?registrationData";
-        const response = await fetch("/api/getBindingStatus");
-
-        if(response.status === 200){
-            const path = "dashboard.html"
-            window.location.href=`/api/redirect?path=${path}`;
             return;
         }
-        setMessage(`problem with Spotify api}`);
-        window.location.href="/register";
+
+        await register(email, password, confirmPassword)
     }
+
+    const register = async (email, password, confirmPassword) => {
+
+        const response = await register("/api/register" , {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                confirmPassword: confirmPassword,
+            })
+        })
+        if(response.status === 200){
+            window.location.href = "/htmls/dashboard.html"
+            return;
+        }
+
+        window.location.href = "/htmls/register.html"
+        const data = await response.json();
+        console.log(data);
+    }
+
     return (
+
         <>
             <TopMenu/>
             <main>
                 <p hidden={!isLoading} className={"loading"}>LOADING...</p>
-                <section className={"form-section"} hidden={isLoading}>
+                {!isLoading && <section className={"form-section"}>
                     <h1>Register</h1>
-                    <label> email  <input type={"email"} className={"basic-input"} id={"email-input"} placeholder={"username..."} name={"email"} autoComplete={"email"}/>  </label>
-                    <label> password <input type={"password"} placeholder={"password..."} className={"basic-input"} id={"password-input"} name={"password"} autoComplete={"off"}/>  </label>
-                    <label> confirm password<input type={"password"} placeholder={"confirm password..."} className={"basic-input"} name={"confirm-password"} autoComplete={"off"}/>  </label>
+
+                    <label> email  <input
+                        type={"email"}
+                        className={"basic-input"}
+                        id={"email-input"}
+                        placeholder={"username..."}
+                        name={"email"}
+                        autoComplete={"email"}
+                        ref={emailRef}
+                        onInput={() => setEmail(emailRef.current.value)}/>
+                    </label>
+
+                    <label> password
+                        <input
+                            type={"password"}
+                            placeholder={"password..."}
+                            className={"basic-input"}
+                            id={"password-input"}
+                            name={"password"}
+                            autoComplete={"off"}
+                            ref={passwordRef}
+                            onInput={() => setPassword(passwordRef.current.value)}/>
+                    </label>
+
+                    <label> confirm password
+                        <input
+                            type={"password"}
+                            placeholder={"confirm password..."}
+                            className={"basic-input"}
+                            name={"confirm-password"}
+                            autoComplete={"off"}
+                            ref={confirmPasswordRef}
+                            onInput={() => setConfirmPassword(confirmPasswordRef.current.value)}
+                        />
+                    </label>
                     <div className={"send-fetch-container"}>
-                        <button className={"login-btn"} > register </button>
-                        <p hidden={!errorMessage && !isLoading}>{errorMessage}</p>
+                        <button className={"register-btn"} onClick={() => throwOrRegister()}> register </button>
+                        {errorMessage && <p>{errorMessage}</p>}
                     </div>
                     <a href={"/htmls/login.html"} className={"auth-redirect"}>already registered? </a>
-                </section>
+                </section>}
             </main>
         </>
     )
