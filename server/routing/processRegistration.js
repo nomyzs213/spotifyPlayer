@@ -2,7 +2,7 @@ import express from "express";
 import register from "../controllers/register.js";
 const proceedRegistration = express.Router();
 
-proceedRegistration.post("api/register" , async (req, res, next) => {
+proceedRegistration.post("/api/register" , async (req, res, next) => {
     try{
         await register(req, res);
     }

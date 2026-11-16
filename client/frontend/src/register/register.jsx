@@ -1,7 +1,7 @@
 import "../../styles/general.css";
 import "../login/login-page.css";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useRedirectLoggedInUser} from "../../custom_hooks/sessionData.js";
 
 export const Register = () => {
@@ -21,15 +21,17 @@ export const Register = () => {
 
     const throwOrRegister = async () => {
         setMessage(null);
+        const cleanEmail = email.replaceAll(" " , "").toLowerCase();
+        const cleanPassword = password.replaceAll(" " , "");
+        const cleanConfirmPassword = confirmPassword.replaceAll(" " , "");
+
+        setEmail(cleanEmail);
+        setPassword(cleanPassword);
+        setConfirmPassword(cleanConfirmPassword);
 
         if(!email || !password || !confirmPassword) {
             setMessage("please enter your credentials");
         }
-
-        setEmail(email.replaceAll(" " , "").toLowerCase());
-        setPassword(password.replaceAll(" " , ""));
-        setConfirmPassword(confirmPassword.replaceAll(" " , ""));
-
 
         if(password.length < 8) {
             setMessage("password is to short.Please enter at least 8 characters.");
@@ -52,25 +54,34 @@ export const Register = () => {
 
     const register = async (email, password, confirmPassword) => {
 
-        const response = await register("/api/register" , {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                confirmPassword: confirmPassword,
-            })
-        })
-        if(response.status === 200){
-            window.location.href = "/htmls/dashboard.html"
-            return;
+        try {
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    confirmPassword: confirmPassword,
+                })
+            });
+
+            if(response.status !== 201){
+
+                const data = await response.json();
+                console.log(data);
+                setMessage(`${data.error.status} : ${data.error.message}`);
+                
+                return;
+            }
+        }
+        catch (err){
+            console.log(err)
         }
 
-        window.location.href = "/htmls/register.html"
-        const data = await response.json();
-        console.log(data);
+        window.location.href = `/api/link-account?alreadyRegistered=${false}`;
+
     }
 
     return (

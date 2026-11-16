@@ -12,7 +12,7 @@ import { user, user_token } from "./models/table_relations.js";
 import { startDb } from "./config/database.js";
 
 // wszystkie routery
-import binding from "./routing/accountBinding.js";
+import binding from "./routing/bindingActions.js";
 import logout from "./routing/processLogout.js";
 import dashboardHandler from "./routing/dashboard.js";
 import passwordActions from "./routing/passwordActions.js";
@@ -20,12 +20,14 @@ import loadPlaylists from "./routing/playlists.js";
 import proceedLogin from "./routing/processLogin.js";
 import proceedRegistration from "./routing/processRegistration.js";
 import playlistGenerator from "./routing/generatePlaylists.js";
+import link from "./routing/linkAccount.js";
 
 import session from "express-session";
 import {isHttps} from "./config/cookieInfo.js";
 import connectPgSimple from "connect-pg-simple";
 import pg from "pg";
 import getUserData from "./routing/getUserData.js";
+import cookieParser from "cookie-parser";
 const app = express();
 
 export const clientPath = path.resolve(__dirname, "../client/frontend/htmls");
@@ -40,6 +42,8 @@ const pgPool = new pg.Pool({
         host: "localhost",
         port: 5432
 })
+
+
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -63,6 +67,7 @@ app.use(session({
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(cookieParser());
 
 await startDb();
 
@@ -74,13 +79,12 @@ app.use(dashboardHandler);
 app.use(passwordActions);
 app.use(loadPlaylists);
 app.use(proceedLogin);
+app.use(link)
 app.use(proceedRegistration);
 app.use(playlistGenerator);
 app.use(getUserData);
 
-app.all(/(.*)/, (req, res) => {
-    res.sendFile(path.join(clientPath, "errors/404.html"));
-});
+
 
 app.use((err , req ,res , next) => {
     console.error(err.stack);
@@ -99,6 +103,7 @@ app.use((err , req ,res , next) => {
     res.status(errorStatus).sendFile(path.join(clientPath, `errors/${errorStatus}.html`));
 
 })
+
 
 
 app.listen(process.env.PORT, '127.0.0.1', () => {

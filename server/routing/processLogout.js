@@ -12,6 +12,7 @@ logout.post('/api/logout' , async (req, res, next) => {
     catch(err){
         return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
+
 });
 
 export default logout;

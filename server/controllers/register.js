@@ -2,7 +2,7 @@ import bcrypt  from "bcrypt";
 import {user} from "../models/table_relations.js";
 import pkg from "sequelize";
 const { Op } = pkg;
-import {sendLinkingReq} from "./linkingReq.js";
+
 import {isHttps} from "../config/cookieInfo.js";
 import {throwError} from "../utlils/errorManager.js";
 
@@ -36,7 +36,7 @@ async function register(req , res){
 
             const cookie = {email , hashedPassword};
             res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isHttps , maxAge: 1000 * 60 * 30});
-            return true;
+            return res.json(201);
 
         }
         catch (err){

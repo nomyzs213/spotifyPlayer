@@ -1,5 +1,5 @@
 import express from "express";
-import cookieParser from 'cookie-parser';
+
 
 const binding = express.Router();
 import {user , user_token}  from "../models/table_relations.js";
@@ -12,11 +12,10 @@ import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 import {sessionActions} from "../utlils/session_actions.js";
 import {isHttps} from "../config/cookieInfo.js";
 
-binding.use(cookieParser());
 binding.get('/api/binding' , async (req , res , next) => {
 
     if(!req.query.code){
-        return next(createError("unauthorized request" , 401));
+        return res.status(500).json({redirectError: true , error: {code: 500 , message: "problem with Spotify api"}});
     }
 
     const {error , status} = req.query;
@@ -35,6 +34,7 @@ binding.get('/api/binding' , async (req , res , next) => {
     if(alreadyRegistered === 'true'){
         try{
             await bindExistingAccount(req, res);
+            return res.status(200).json({newUser: false})
         }
         catch(err){
             return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
@@ -43,16 +43,13 @@ binding.get('/api/binding' , async (req , res , next) => {
     else{
         try{
             await bindNewAccount(req , res);
+            return res.status(200).json({newUser: true})
         }
         catch(err){
             return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
         }
     }
-    req.cookie("binding_success" , true , {
-        httpOnly: true,
-        secure: isHttps,
-        maxAge: 1000 * 60 * 15
-    });
+
 
 })
 
@@ -123,7 +120,7 @@ async function bindNewAccount(req, res) {
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
-    res.redirect('/login');
+
 }
 
 async function bindExistingAccount(req ,res){
@@ -178,9 +175,6 @@ async function bindExistingAccount(req ,res){
     if(!found) throwError('problem with session' ,400);
 
     req.session.regenerate(req);
-    res.redirect('/login');
-
-    return true;
 }
 
 
