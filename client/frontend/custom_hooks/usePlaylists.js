@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 export const usePlaylists = () => {
     const [isLoading, setLoading] = useState(true);
     const [playlists, setPlaylists] = useState(null);
+
     useEffect(() => {
         void (async () => {
             const response = await fetch("/api/getPlaylists", {
@@ -17,6 +18,8 @@ export const usePlaylists = () => {
             setLoading(false);
         })();
     }, []);
+
+    return [isLoading, playlists];
 }
 
 export const useLikedSongs = () => {

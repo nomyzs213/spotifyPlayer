@@ -2,38 +2,49 @@ import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
 import "../../styles/general.css";
 import "./playlists.css";
 import "../../styles/scrollbar.css";
-import {testPlaylists} from "./testData.js";
 import {useState} from "react";
-import {useLikedSongs} from "../../custom_hooks/usePlaylists.js";
+import {useLikedSongs, usePlaylists} from "../../custom_hooks/usePlaylists.js";
 import {useRedirectLoggedOutUser} from "../../custom_hooks/sessionData.js";
 import likedSongsImg from "./liked_songs.svg";
 import {useMediaQuery} from "@uidotdev/usehooks";
 import "../../styles/more-button.css";
 
 export const Playlists = () => {
-    // const [isLoading] = useRedirectLoggedOutUser();
+    const [isLoading] = useRedirectLoggedOutUser();
     const [selected, setSelected] = useState([]);
+
     const [playlistNames, setNames] = useState([]);
     const [error, setError] = useState(null);
-    // const [isLoading2, hasLikedSongs] = useLikedSongs();
-    // poki nie ma sesji dziajacacych to ignoruje to bo sie nie laduje
-    const [isLoading2, hasLikedSongs] = [false , true];
+    const [isLoadingLikedSongs, hasLikedSongs] = useLikedSongs();
+    const [isLoadingPlaylists, playlists] = usePlaylists();
 
     const moods = ["energetic" , "chill" , "sad" , "happy"];
     const isPhone = useMediaQuery("only screen and (max-width: 768px)")
     const [showAllPlaylists, setShowAllPlaylists] = useState(false);
 
-    const isLoading = false;
-    const generate = async (selected) => {
-        const response = await fetch(`/api/generatePlaylists?id=${selected}`, {
-            method: "GET",
+
+    const likedSongsObj = {
+        id: "#mcxppd3032",
+        // losowa wartość - byle dzialało a spotify nie ma szans ze zwroci w takim formacie jak to
+        title: "liked songs",
+        src: likedSongsImg
+    }
+
+    const includesLikedSongs = () =>{
+        return selected.includes(likedSongsObj.id);
+    }
+
+    const generate = async () => {
+        const response = await fetch(`/api/generatePlaylists`, {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            body: JSON.stringify({selected: selected, likedSongs: includesLikedSongs()})
         });
 
         if(response.status !== 204){
-            setError("problem accused when generating playlist. try again later. ");
+            setError("problem with generating playlist. try again later. ");
         }
     }
 
@@ -52,28 +63,23 @@ export const Playlists = () => {
 
     }
 
-    const likedSongsObj = {
-        id: "#mcxppd3032",
-        // losowa wartość - byle dzialało a spotify nie ma szans ze zwroci w takim formacie jak to
-        title: "liked songs",
-        src: likedSongsImg
-    }
 
     return(
         <>
             {!showAllPlaylists && <TopMenu/>}
-            {isLoading || isLoading2 &&  <h1>LOADING...</h1>}
-            {!isLoading && !isLoading2 && <main>
+            {isLoading || isLoadingLikedSongs && isLoadingPlaylists  && <h1>LOADING...</h1>}
+            {!isLoading && !isLoadingLikedSongs && !isLoadingPlaylists &&  <main>
 
                 { (!isPhone || (isPhone && showAllPlaylists) )&&
                     <PlaylistContainer
-                        playlists={testPlaylists}
+                        playlists={playlists}
                         hasLikedSongs={hasLikedSongs}
                         setFunction={updateSelected}
                         selected={selected}
                         likedSongs={likedSongsObj}
                         isPhone={isPhone}
                         setShowAllPlaylists={setShowAllPlaylists}
+                        setLikedSongsSelected={setLikedSongsSelected}
                     />
                 }
 
@@ -81,7 +87,7 @@ export const Playlists = () => {
                     MobileCompressedPlaylists
                     hasLikedSongs={hasLikedSongs}
                     setFunction={updateSelected}
-                    playlists={testPlaylists}
+                    playlists={playlists}
                     selected={selected}
                     likedSongs={likedSongsObj}
                     setShowAllPlaylists={setShowAllPlaylists}
@@ -102,7 +108,7 @@ const PlaylistContainer = ({hasLikedSongs, setFunction, playlists, selected, lik
             <button className={"close-popup"} onClick={() => setShowAllPlaylists(false)}>X</button>
             <h2>Select playlist</h2>
             <div className={isPhone ? "mobile-playlist-box" : "playlist-box"}>
-                {hasLikedSongs && <Playlist item={likedSongs} key={likedSongs.id} id={likedSongs.id} selected={selected} onClick={()=> setFunction(likedSongs)} isLikedSongs={true}/>}
+                {hasLikedSongs && <Playlist item={likedSongs} key={likedSongs.id} id={likedSongs.id} selected={selected} onClick={()=> setFunction(likedSongs) } isLikedSongs={true}/>}
                 {playlists.map(p => <Playlist
                     item={p}
                     key={p.id}

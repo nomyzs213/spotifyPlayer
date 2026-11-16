@@ -6,7 +6,7 @@ import refreshing from "../refreshCodes.js";
 import {fetched_songs} from "../../models/fetched_songs.js";
 import gemini from "../../utlils/geminiAI.js";
 import {setTimeout} from "timers/promises";
-import session from "express-session";
+
 
     class playlistsManager{
         constructor() {
@@ -41,7 +41,7 @@ import session from "express-session";
             if( tagsAmount  ===  0) return null;
             let moodCount = 0;
             tagsList.forEach(tag => {
-                if(searchedMood.includes(tag.name)) moodCount++;
+                if(searchedMood.includes(tag)) moodCount++;
             });
 
             return moodCount > Math.floor(tagsAmount / 2);
@@ -54,7 +54,7 @@ import session from "express-session";
             const limit = "50";
             const offset = "0";
 
-            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+            await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
 
             const response = await fetch(
                 "https://api.spotify.com/v1/me/playlists"
@@ -83,8 +83,8 @@ import session from "express-session";
                 compressedPlaylists.push({
                     id: el.items.id,
                     image: el?.images[0],
-                    name: el.name,
-                    songCount: el.items.total
+                    name: el.items.name,
+                    songCount: el.total
                 })
             });
 
@@ -95,7 +95,7 @@ import session from "express-session";
 
         async #getTracksDetails(req, res , playlistId) {
             if (!req.session.user) throwError("unauthorized access", 401);
-            if (req.body.id) throwError("something went wrong with choosing playlist", 500);
+            if (!req.body.id) throwError("something went wrong with choosing playlist", 500);
 
 
             const allItems = [];
@@ -104,7 +104,7 @@ import session from "express-session";
             const max = "?limit=50";
             const filter = "&fields=items(track(name ,artists(name) , uri) ),next";
 
-            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+            await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
 
             const response = await fetch(reqUrl + max + filter, {
                 method: "GET",
@@ -122,10 +122,10 @@ import session from "express-session";
             const data = await response.json();
             if(data.error) throwError(data.error.status, data.error.message);
             let next = data.next;
-            allItems.push(data.items);
+            allItems.push(...data.items);
 
             while(next){
-                await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+                await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
 
                 const response = await fetch(next + filter , {
                     method:  "GET",
@@ -154,14 +154,14 @@ import session from "express-session";
         async #getLikedSongs(req, res){
             if(!req.body.likedSongs) throwError("unauthorized liked songs get", 401);
             if (!req.session.user) throwError("unauthorized access - no session", 401);
-            if (req.body.id) throwError("something went wrong with choosing playlist", 500);
+            if (!req.body.id) throwError("something went wrong with choosing playlist", 500);
 
 
             const max = "?limit=50";
             const accessToken = req.session.user.accessToken ;
             const allSongs = [];
 
-            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+            await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
 
             const response = await fetch("https://api.spotify.com/v1/me/tracks"+ max , {
                 method: "GET",
@@ -177,9 +177,11 @@ import session from "express-session";
             }
 
             const data = await response.json();
+            allSongs.push(...data.items);
+
             let next = data.next;
             while (next){
-                await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+                await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
 
                 const response = await fetch(next, {
                     "method": "GET",
@@ -208,7 +210,7 @@ import session from "express-session";
             const limit = "?limit=1";
             const accessToken = req.session.user.accessToken;
 
-            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+            await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
 
             const response = await fetch("https://api.spotify.com/v1/me/tracks" + limit, {
                 method: "GET",
@@ -235,9 +237,9 @@ import session from "express-session";
             const matchingSongs = [];
 
             for(const item of allSongs){
-                const artist = item.track.artists[0];
-                const songName = item.track.name;
-
+                const artist = item.track.artists[0].name;
+                const songName =item.track.name;
+                let lastFmUsed = true;
                 let found;
                 try{
                      found = await fetched_songs.findOne({
@@ -256,15 +258,24 @@ import session from "express-session";
                     tagNames = [...found.tags];
                 }
                 else{
-                    const response = await fetch(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${process.env.LAST_FM_API_KEY}&artist=${artist}&track=${songName}&format=json`);
+                    const response = await fetch(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${process.env.LAST_FM_API_KEY}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(songName)}&autocorrect=${1}&format=json`);
                     if(!response.ok) throwError("problem with last.fm" , 500);
 
                     const data = await response.json();
-                    if(!data.toptags) throwError(data.error.message, data.error.status);
-                    const rawTags = data.track.toptags.tag || [];
+                    if(!data.track.toptags) {
+                        lastFmUsed = false;
+                        tagNames = await gemini.evaluateTrackTags(artist , songName);
+                    }
+                    const tagsToCompress = data.track.toptags.tag || [];
+                    const rawTags = [];
+
+                    for(const rawTag of tagsToCompress){
+                        rawTags.push(rawTag.name);
+                    }
                     // z last fm moze byc pusta tablica wiec dla niszowych piosenek szukamy prze ai
 
-                    if(rawTags === []) {
+                    if(rawTags.length === 0 ) {
+                        lastFmUsed = false;
                         tagNames = await gemini.evaluateTrackTags(artist , songName);
                     }
                     else{
@@ -284,7 +295,7 @@ import session from "express-session";
 
                 }
                 if(this.#matchesMood(req, tagNames)) matchingSongs.push(item.track);
-                await setTimeout(200);
+                if(lastFmUsed) await setTimeout(200)
                 // max 5 req na sek czytajac z ich docsow
             }
 
@@ -295,7 +306,7 @@ import session from "express-session";
         async #createPlaylist(req , res){
             if(!req.session.user) throwError("unauthorized access", 401);
 
-            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+            await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
             const accessToken = req.session.user.accessToken;
 
             const response = await fetch("https://api.spotify.com/v1/me/playlists" , {
@@ -323,15 +334,15 @@ import session from "express-session";
         async #fillPlaylist(req, res , playlistId, matchingSongs){
             if(!req.session.user) throwError("unauthorized access", 401);
 
-            await refreshing.refreshTokens(req , res , areCodesExpired(req.session.user.id));
+            await refreshing.refreshTokens(req , res , await areCodesExpired(req.session.user.id));
             const accessToken = req.session.user.accessToken;
             let positionNumber = 0;
 
             const uris = matchingSongs.map(song => song.uri).slice(0, 500);
 
-            while(positionNumber <= uris.length){
-                const slicedUris = uris.slice(positionNumber , positionNumber + 100 + 1) || null;
-                if(!slicedUris) break;
+            while(positionNumber < uris.length){
+                const slicedUris = uris.slice(positionNumber , positionNumber + 100) || null;
+                if(slicedUris.length === 0) break;
 
                 const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
                     method: "POST",
@@ -358,7 +369,7 @@ import session from "express-session";
 
         async proceed(req, res){
             let allSongs = [];
-            const idsArr = req.body.idsArr;
+            const idsArr = req.body.selected;
 
             if(req.body.likedSongs)  allSongs = await this.#getLikedSongs(req,res);
             if(idsArr){
@@ -370,10 +381,12 @@ import session from "express-session";
 
             const matchingSongs = await this.#getSongsMoodTags(req, res, allSongs);
 
-            if(!matchingSongs) res.status(200).json({
-                success: true,
-                message: "couldnt find any songs that match selected mood"
-            });
+            if(!matchingSongs) {
+                return res.status(200).json({
+                    success: true,
+                    message: "couldnt find any songs that match selected mood"
+                });
+            }
 
             const playlistId = await this.#createPlaylist(req, res);
             const songsCount = await this.#fillPlaylist(req, res, playlistId, matchingSongs);

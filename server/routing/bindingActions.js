@@ -15,7 +15,7 @@ import {isHttps} from "../config/cookieInfo.js";
 binding.get('/api/binding' , async (req , res , next) => {
 
     if(!req.query.code){
-        return res.status(500).json({redirectError: true , error: {code: 500 , message: "problem with Spotify api"}});
+        return res.status(500).json({redirectError: true , error: {code: 500 , message: "problem with Spotify api", query: req.query}});
     }
 
     const {error , status} = req.query;

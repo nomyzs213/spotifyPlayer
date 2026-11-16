@@ -18,7 +18,7 @@ loadPlaylists.get('/api/getPlaylists' , async (req, res, next) => {
 
 })
 
-loadPlaylists.get('/api/generatePlaylists' , async (req, res , next) => {
+loadPlaylists.post('/api/generatePlaylists' , async (req, res , next) => {
     try{
         await playlistManager.proceed(req, res);
         return res.status(204);
