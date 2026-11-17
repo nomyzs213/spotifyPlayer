@@ -19,16 +19,6 @@ export const user =  sequelize.define("User" , {
             notEmpty: true
         }
     },
-    username: {
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        unique: true,
-        validate: {
-            len: [3 , 100],
-            isLowercase: true,
-            notEmpty: true
-        }
-    },
     password_hash: {
         type: DataTypes.TEXT,
         allowNull: false,
