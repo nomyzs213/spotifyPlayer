@@ -10,16 +10,11 @@ import {sequelize} from "../config/database.js";
 import {throwError, createError} from "../utlils/errorManager.js";
 import {checkForCodesRefresh} from "../middleware/token_expiration.js";
 import {sessionActions} from "../utlils/session_actions.js";
-import {isHttps} from "../config/cookieInfo.js";
+
 
 binding.get('/api/binding' , async (req , res , next) => {
-
-    if(!req.query.code){
-        return res.status(500).json({redirectError: true , error: {code: 500 , message: "problem with Spotify api", query: req.query}});
-    }
-
     const {error , status} = req.query;
-    const alreadyRegistered = req.cookies.already_registered;
+
 
     if(status === "canceled"){
         clearCookies(res , "pending_registration" , "state");
@@ -27,14 +22,22 @@ binding.get('/api/binding' , async (req , res , next) => {
     }
 
     if(error) {
-         clearCookies(res , "pending_registration" , "state");
-         return res.status(400).json({redirectError: true, error: {status: 502 , message: "problem with Spotify api"}});
+        clearCookies(res , "pending_registration" , "state");
+        return res.status(400).json({redirectError: true, error: {status: 502 , message: "problem with Spotify api"}});
     }
+
+    if(!req.query.code){
+        return res.status(500).json({redirectError: true , error: {code: 500 , message: "problem with Spotify api", query: req.query}});
+    }
+
+
+    const alreadyRegistered = req.cookies.already_registered;
 
     if(alreadyRegistered === 'true'){
         try{
             await bindExistingAccount(req, res);
-            return res.status(200).json({newUser: false})
+            console.log("existing user refresh token is refreshed");
+            res.redirect("127.0.0.1:5173/htmls/dashboard.html");
         }
         catch(err){
             return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
@@ -43,7 +46,8 @@ binding.get('/api/binding' , async (req , res , next) => {
     else{
         try{
             await bindNewAccount(req , res);
-            return res.status(200).json({newUser: true})
+            console.log("new user created")
+            res.redirect("127.0.0.1:5173/htmls/dashboard.html")
         }
         catch(err){
             return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
@@ -70,12 +74,17 @@ async function bindNewAccount(req, res) {
     const state = req.query.state;
     const stateInCookies = req.cookies.state;
 
+    console.log(req.cookies);
 
-    if (!state || !stateInCookies || stateInCookies !== state) {
+    if (!state) {
          clearCookies(res, 'pending_registration', 'state');
-        throwError("missing params from req.query or from req.cookies" , 400);
+        throwError("missing params from req.query" , 400);
     }
 
+    if(!stateInCookies || stateInCookies !== state) {
+        clearCookies(res, 'pending_registration', 'state');
+        throwError("missing cookies" , 400);
+    }
 
     const rawCookie = req.cookies.pending_registration;
     if (!rawCookie) {
@@ -110,17 +119,21 @@ async function bindNewAccount(req, res) {
             refresh_token_expiry:refreshExpiresAt
         }, { transaction: t });
 
+        sessionActions.createUserInstance(req, createdUser.id, accessToken , refreshToken);
+
         await t.commit();
 
 
     } catch (err) {
         await t.rollback();
+        console.log(err);
         throwError("db error" , 500);
     }
     finally {
         clearCookies(res, 'pending_registration' , 'state');
     }
 
+    res.redirect("/htmls/dashboard.html");
 }
 
 async function bindExistingAccount(req ,res){
@@ -173,6 +186,7 @@ async function bindExistingAccount(req ,res){
 
     const found = await sessionActions.updateTokens(req);
     if(!found) throwError('problem with session' ,400);
+
 
     req.session.regenerate(req);
 }

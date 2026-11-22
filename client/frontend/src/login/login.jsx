@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from "react";
+import {useState,useRef} from "react";
 import "./login-page.css";
 import "../../styles/general.css";
 import {TopMenu} from "../general_components/top_menu/topMenu.jsx";
@@ -19,45 +19,48 @@ export const LoginPage = () => {
 
     const throwOrLogin = async () => {
         setMessage(null);
-        setEmail(email.replaceAll(" " , "").toLowerCase());
-        setPassword(password.replaceAll(" " , ""));
 
-        if(!email || !password) {
+        const clearEmail = email.replaceAll(" " , "").toLowerCase();
+        const clearPassword = password.replaceAll(" " , "")
+        setEmail(clearEmail);
+        setPassword(clearPassword);
+
+
+        if(!clearEmail || !clearPassword) {
             setMessage("please enter your credentials");
             return;
         }
 
-        if(password.length < 8) {
+        if(clearPassword.length < 8) {
             setMessage("password is to short.Please enter at least 8 characters.");
             return;
         }
 
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!regex.test(email)){
+        if(!regex.test(clearEmail)){
             setMessage("please enter a valid email address");
             return;
         }
 
-        await login(email, password)
+        await login(clearEmail, clearPassword)
     }
 
-        async function login(username ,password){
+    async function login(email, password) {
         const response = await fetch("/api/login", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
-                username: username,
+                email: email,
                 password: password
             })
         });
 
         let data;
-        if(response.status === 400){
+        if (response.status === 400) {
             data = await response.json();
         }
-
-        setMessage(data?.message ? data?.message : false);
-
+        setMessage(data?.message ? data?.message : null);
+        window.location.href="/htmls/index.html";
     }
 
 

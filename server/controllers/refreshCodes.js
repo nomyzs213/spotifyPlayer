@@ -21,7 +21,9 @@ class RefreshCodes{
         if(!isExpired) return false;
 
         if(tokenName === "REFRESH_TOKEN"){
-            return await this.#refreshRefreshToken(req, res);
+            await this.#refreshRefreshToken(req, res);
+            await sessionActions.updateTokens(req);
+            return;
         }
 
         if(tokenName === "ACCESS_TOKEN"){

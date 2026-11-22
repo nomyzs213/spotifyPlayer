@@ -23,6 +23,7 @@ export const TopMenu = () => {
     const cancelTimeout = () => {
         if(timer !== null) clearTimeout(timer);
     }
+
     return (
         <>
         {!isPhone && <ul className={"classic-menu"} >
@@ -31,8 +32,8 @@ export const TopMenu = () => {
             </li>
 
                 {!isPhone && <ProfileButton
-                    username={display_name ? display_name : " "}
-                    src={imageUrl ? imageUrl : " "}
+                    username={display_name}
+                    src={imageUrl}
                     isLoading={isLoading}
                     loggedIn={!!display_name}/>}
         </ul>}

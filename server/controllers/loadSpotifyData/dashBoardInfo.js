@@ -4,9 +4,13 @@ import refreshing from "../refreshCodes.js";
 import areCodesExpired from "../../utlils/areCodesExpired.js";
 
 class dashboard{
-    async getUserProfile( accessToken){
+    async getUserProfile(req, res ,  independentCall = false){
         const url = "https://api.spotify.com/v1/me";
-        if(!accessToken) return [];
+
+        if(!req.session.user.accessToken) return [];
+        if(independentCall) await refreshing.refreshTokens(req, res, await areCodesExpired(req.session.user.id));
+        const accessToken = req.session.user.accessToken;
+
         const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -20,9 +24,9 @@ class dashboard{
         }
 
         const data = await response.json();
-        if(!data.account_id) throwError(data.error.message, data.error.status);
+        if(!data.id) throwError(data.error.message, data.error.status);
         const {display_name, images} = data;
-        const imageUrl = images[-1];
+        const imageUrl = images.at(0)?.url;
         return [display_name, imageUrl];
     }
 
@@ -41,7 +45,7 @@ class dashboard{
                 + "&limit=" + limit
                 + "&offset=" + offset
             , {
-                    headers: spotifyFetchSchema.basicHeader(accessToken)
+                    headers: {"Authorization": spotifyFetchSchema.basicHeader(accessToken)}
                 })
         }
         const [shortTerm , mediumTerm , longTerm]  = await Promise.all(fetches);
@@ -71,7 +75,7 @@ class dashboard{
             compressedArtists.push(
                 {
                     name: artists[i].name,
-                    image: artists[i].images[-1]?.url,
+                    image: artists[i].images.at(-1)?.url,
                     spotifyLink: artists[i].external_urls.spotify,
                     position: i + 1
                 }
@@ -83,7 +87,7 @@ class dashboard{
                 {
                     name: tracks[i].name,
                     isLocal: tracks[i].is_local,
-                    image: tracks[i].album.images[-1].url,
+                    image: tracks[i].album.images.at(-1)?.url,
                     artists: tracks[i].artists,
                     spotifyLink: tracks[i].href,
                     position: i + 1

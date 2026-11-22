@@ -33,6 +33,15 @@ const app = express();
 export const clientPath = path.resolve(__dirname, "../client/frontend/htmls");
 
 
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+    if ((!req.cookies || Object.keys(req.cookies).length === 0) && req.headers.cookie && typeof req.headers.cookie === "object") {
+        req.cookies = req.headers.cookie;
+    }
+    next();
+});
+
 
 const sessionStore = connectPgSimple(session);
 const pgPool = new pg.Pool({
@@ -64,10 +73,13 @@ app.use(session({
         sameSite: 'lax'
     }
 }))
-app.use(cors());
+
+app.use(cors({
+    origin: "http://127.0.0.1:5173",
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(cookieParser());
 
 await startDb();
 

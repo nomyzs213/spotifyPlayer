@@ -1,22 +1,24 @@
-import {user , user_token} from "../models/table_relations.js";
+import {user, user_token} from "../models/table_relations.js";
 import bcrypt from "bcrypt";
 import pkg from "sequelize";
-const { Op } = pkg;
 import {throwError} from "../utlils/errorManager.js";
 import {sessionActions} from "../utlils/session_actions.js";
+import DashboardLoader from  "./loadSpotifyData/dashBoardInfo.js"
+
+const { Op } = pkg;
 
 async function login(req ,res){
 
-    const loggingIdentifier = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
 
-    if(!password || !loggingIdentifier){
+    if(!password || !email){
         throwError("missing credentials" , 401);
     }
 
     const found = await user.findOne({
         where: {
-            [Op.or] : [ {email: loggingIdentifier} , {username: loggingIdentifier}]
+            email: email
         }
     });
 
@@ -37,9 +39,13 @@ async function login(req ,res){
     if(!foundTokens){
         throwError("tokens not found" , 400);
     }
+    console.log("found tokens:" , foundTokens , "\n");
 
     sessionActions.createUserInstance(req , found.id , foundTokens.access_token, foundTokens.refresh_token);
-    res.redirect('/dashboard');
+    req.session.profile = await DashboardLoader.getUserProfile(req, res, true);
+    console.log(req.session);
+
+    res.status(201).json({success: true});
 }
 
 export default login;

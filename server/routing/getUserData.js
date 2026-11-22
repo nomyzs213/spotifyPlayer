@@ -1,36 +1,27 @@
 import express from "express";
-import {spotifyFetchSchema} from "../utlils/spotifyFetchSchema.js";
-import {createError} from "../utlils/errorManager.js";
 import DashboardLoader from "../controllers/loadSpotifyData/dashBoardInfo.js";
 const userData = express.Router();
 
-userData.get("/api/getUserData", (req, res, next) => {
-    try {
 
-        if (req.session && req.session.user) {
-            return res.status(200).json({ user: req.session.user });
-        }
 
-        return res.status(200).json({});
-    } catch (err) {
-        const status = err.status || 500;
-        return res.status(status).json({
-            redirectError: true,
-            error: { status, message: err.message }
-        });
-    }
-});
-
-userData.post("/api/getProfileData" ,async (req, res, next) => {
+userData.post("/api/getProfileData" ,async (req, res) => {
     let userProfile;
+
+    const accessToken = req.session?.user?.accessToken;
+    if(!accessToken) return res.status(200).json({profile: null})
+
+    if(req.session.profile) return res.status(200).json({profile: req.session.profile});
+
+
     try{
-         userProfile = await DashboardLoader.getUserProfile();
+         userProfile = await DashboardLoader.getUserProfile(req, res, true);
     }
     catch (err){
-        return res.status(err.status).json({redirectError: true, error: {status: err.status, message: err.message}});
+        console.log(err);
+        return res.status(err.status? err.status : 400).json({redirectError: true, error: {status: err.status, message: err.message}});
     }
-
-    return res.status(200).json({userProfile});
+    if(!req.session.profile) req.session.profile = userProfile
+    return res.status(200).json({profile: req.session.profile});
 
 })
 

@@ -9,9 +9,9 @@ export const Register = () => {
     const [errorMessage, setMessage] = useState(null);
     const [isLoading] = useRedirectLoggedInUser();
 
-    const [email, setEmail] = useState(null);
-    const [password, setPassword] = useState(null);
-    const [confirmPassword, setConfirmPassword] = useState(null);
+    const [email, setEmail] = useState( " ");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState( "");
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
@@ -25,31 +25,28 @@ export const Register = () => {
         const cleanPassword = password.replaceAll(" " , "");
         const cleanConfirmPassword = confirmPassword.replaceAll(" " , "");
 
-        setEmail(cleanEmail);
-        setPassword(cleanPassword);
-        setConfirmPassword(cleanConfirmPassword);
 
-        if(!email || !password || !confirmPassword) {
+        if(!cleanEmail || !cleanPassword || !cleanConfirmPassword) {
             setMessage("please enter your credentials");
         }
 
-        if(password.length < 8) {
+        if(cleanPassword.length < 8) {
             setMessage("password is to short.Please enter at least 8 characters.");
             return;
         }
 
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!regex.test(email)){
+        if(!regex.test(cleanEmail)){
             setMessage("please enter a valid email address");
             return;
         }
 
-        if( password !== confirmPassword) {
+        if( cleanPassword !== cleanConfirmPassword) {
             setMessage("password confirmation does not match the password");
             return;
         }
 
-        await register(email, password, confirmPassword)
+        await register(cleanEmail, cleanPassword, cleanConfirmPassword)
     }
 
     const register = async (email, password, confirmPassword) => {

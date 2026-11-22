@@ -4,12 +4,13 @@ const loadPlaylists = express.Router();
 
 
 loadPlaylists.get('/api/getPlaylists' , async (req, res, next) => {
+    console.log(req.session);
     let playlists;
     try{
         playlists = await playlistManager.getUserPlaylists(req, res);
     }
     catch (err){
-        return res.status(err.status).json({redirectError: true, error: {status: err.status , message: err.message}});
+        return res.status(err.status? err.status : 400).json({redirectError: true, error: {status: err.status , message: err.message}});
     }
 
     res.status(200).json({

@@ -13,9 +13,10 @@ import {useDashboard} from "../../custom_hooks/useDashboard.js";
 export const Dashboard = () => {
     const [isLoading] = useRedirectLoggedOutUser();
     const listeningData = useDashboard();
+    console.log(listeningData);
 
-    const artists = listeningData.compressedTopItems.artists;
-    const tracks = listeningData.compressedTopItems.tracks;
+    // const artists = listeningData.compressedTopItems.artists;
+    // const tracks = listeningData.compressedTopItems.tracks;
 
     const isPhone = useMediaQuery("only screen and (max-width: 768px)");
     const [moreSongsOpened , setMoreSongsOpened] = useState(null);

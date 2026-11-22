@@ -35,8 +35,8 @@ async function register(req , res){
             }
 
             const cookie = {email , hashedPassword};
-            res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isHttps , maxAge: 1000 * 60 * 30});
-            return res.json(201);
+            res.cookie('pending_registration' , cookie , {httpOnly: true, secure: isHttps , maxAge: 1000 * 60 * 30, sameSite: "lax"});
+            return res.status(201).json({success: true });
 
         }
         catch (err){
