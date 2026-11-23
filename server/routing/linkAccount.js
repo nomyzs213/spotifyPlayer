@@ -7,6 +7,7 @@ const link = express.Router();
 
 link.get("/api/link-account" , async (req , res) => {
     const currentlyRegistering = req.cookies.pending_registration;
+    const reqData = req.cookies.bind_params;
     const isRegistered = req.query.alreadyRegistered;
     try{
         if(!currentlyRegistering) {
@@ -14,8 +15,6 @@ link.get("/api/link-account" , async (req , res) => {
             return;
         }
 
-        console.log(req.headers.cookie);
-        console.log(req.cookies);
         await sendLinkingReq(req, res, isRegistered);
 
     }

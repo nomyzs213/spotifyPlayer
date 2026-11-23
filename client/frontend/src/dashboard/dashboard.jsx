@@ -12,11 +12,9 @@ import {useDashboard} from "../../custom_hooks/useDashboard.js";
 
 export const Dashboard = () => {
     const [isLoading] = useRedirectLoggedOutUser();
-    const listeningData = useDashboard();
-    console.log(listeningData);
-
-    // const artists = listeningData.compressedTopItems.artists;
-    // const tracks = listeningData.compressedTopItems.tracks;
+    const  [tracks, setTracks] = useState(null);
+    const [artists, setArtists] = useState(null);
+    const [isLoadingItems] = useDashboard(setTracks, setArtists);
 
     const isPhone = useMediaQuery("only screen and (max-width: 768px)");
     const [moreSongsOpened , setMoreSongsOpened] = useState(null);
@@ -25,15 +23,15 @@ export const Dashboard = () => {
     return (
         <>
             {!moreArtistsOpened && !moreSongsOpened && <TopMenu/>}
-            {isLoading && <h1> LOADING...</h1>}
-            {!isLoading && !isPhone && <main>
+            {(isLoading || isLoadingItems || !artists || !tracks) && <h1> LOADING...</h1>}
+            {(!isLoading || !isLoadingItems)  && !isPhone && <main>
                 <ListeningPeriod periodName={"LAST MONTH"} artists={artists.shortTerm} songs={tracks.shortTerm}/>
                 <ListeningPeriod periodName={"LAST 6 MONTHS"} artists={artists.mediumTerm} songs={tracks.mediumTerm}/>
                 <ListeningPeriod periodName={"LAST YEAR "} artists={artists.longTerm} songs={tracks.longTerm}/>
             </main>
             }
 
-            {!isLoading && isPhone &&
+            {(!isLoading || !isLoadingItems) && isPhone &&
                 <main>
 
                     <MobileTopItems

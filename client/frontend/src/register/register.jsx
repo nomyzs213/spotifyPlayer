@@ -77,7 +77,7 @@ export const Register = () => {
             console.log(err)
         }
 
-        window.location.href = `/api/link-account?alreadyRegistered=${false}`;
+        window.location.href = `/api/link-account?is_registred=${false}`;
 
     }
 

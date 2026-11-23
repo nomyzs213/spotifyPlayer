@@ -21,9 +21,10 @@ export async function sendLinkingReq(req , res, alreadyRegistered = false) {
     }).toString();
 
 
-        res.cookie("already_registered" , alreadyRegistered , {httpOnly: true, secure: isHttps, maxAge: 1800 * 1000, sameSite: "lax"});
-        res.cookie('state', state, {httpOnly: true, secure: isHttps, maxAge: 1000 * 60 * 60 * 24 * 7, sameSite: "lax"});
+        res.cookie("already_registered" , alreadyRegistered , {httpOnly: true, secure: isHttps, maxAge: 1800 * 1000});
+        res.cookie('state', state, {httpOnly: true, secure: isHttps, maxAge: 1000 * 60 * 60 * 24 * 7});
 
+        console.log('https://accounts.spotify.com/authorize?' + params);
         res.redirect('https://accounts.spotify.com/authorize?' + params);
 
 }

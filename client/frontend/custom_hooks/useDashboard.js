@@ -1,22 +1,25 @@
 import {useState ,useEffect} from "react";
 
-export const useDashboard = () =>{
-    const [isLoading, setIsLoading] = useState(false);
-    const [dashboardData , setDashboardData] = useState(null);
-
+export const useDashboard = (setTracks, setArtists) =>{
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const load = async () => {
-            const response = await fetch('/api/dashboard')
+            const response = await fetch('/api/dashboard', {
+                method: "POST"
+            })
             const data = await response.json();
+            console.log(data);
 
             if(data.redirectError) {
-                window.location.href = `/htmls/errors/${data.error.status}.html`;
                 return;
             }
-            setDashboardData(data)
-            setIsLoading(false)
+            setTracks(data.compressedTopItems.tracks)
+            setArtists(data.compressedTopItems.artists)
+            setIsLoading(false);
+
         }
+        void load()
     }, []);
-    return [isLoading, dashboardData];
+    return [isLoading];
 }

@@ -99,18 +99,16 @@ class dashboard{
     }
 
     async loadDashBoard(req , res){
-        const accessToken = req.session.user.accessToken;
-        if(!accessToken) throwError("unauthorized access" ,401);
+        if(!req.session.user.accessToken) throwError("unauthorized access" ,401);
 
         await refreshing.refreshTokens(req,res , await areCodesExpired(req.session.user.id));
-
-        const userProfile = await this.getUserProfile(accessToken);
+        const accessToken = req.session.user.accessToken;
+        const userProfile = await this.getUserProfile(req, res, false);
         const artists = await this.#getTopItems(accessToken, "artists");
         const tracks = await this.#getTopItems(accessToken, "tracks");
-        const [compressedShortTermArtists , compressedShortTermTracks] = this.#getCompressedTopItems(req , artists.shortTerm, tracks.shortTerm);
-        const [compressedMediumTermArtists, compressedMediumTermTracks] = this.#getCompressedTopItems(req, artists.mediumTerm, tracks.mediumTerm);
-        const [compressedLongTermArtists, compressedLongTermTracks] = this.#getCompressedTopItems(req, artists.longTerm, tracks.longTerm);
-
+        const [compressedShortTermArtists , compressedShortTermTracks] = this.#getCompressedTopItems(req , artists.shortTerm.items, tracks.shortTerm.items);
+        const [compressedMediumTermArtists, compressedMediumTermTracks] = this.#getCompressedTopItems(req, artists.mediumTerm.items, tracks.mediumTerm.items);
+        const [compressedLongTermArtists, compressedLongTermTracks] = this.#getCompressedTopItems(req, artists.longTerm.items, tracks.longTerm.items);
         return {
             compressedTopItems: {
                 artists: {
